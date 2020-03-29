@@ -247,29 +247,19 @@ $cards = [
                     <h2><?=$card['title']?></h2>
                 </header>
                 <div class="post__main">
-                    <?php
-                    switch ($card['type']) {
-                        case 'post-quote':?>
-                            <blockquote>
-                            <p>
-                                <?=$card['content'] ?>
-                            </p>
+                    <?php switch($card['type']): case 'post-quote': ?>
+                        <blockquote>
+                            <p><?=$card['content'] ?></p>
                             <cite>Неизвестный Автор</cite>
-                            </blockquote>
-                            <?php
-                            break;
-                        case 'post-text': ?>
-                            <p><?=$card['content']?></p>
-                        <?php
-                            break;
-                        case 'post-photo': ?>
-                            <div class="post-photo__image-wrapper">
+                        </blockquote>
+                    <?php break; case 'post-text': ?>
+                        <p><?=$card['content']?></p>
+                    <?php break; case 'post-photo': ?>
+                        <div class="post-photo__image-wrapper">
                             <img src="img/<?=$card['content'];?>" alt="Фото от пользователя" width="360" height="240">
-                            </div>
-                            <?php
-                            break;
-                        case 'post-link': ?>
-                            <div class="post-link__wrapper">
+                        </div>
+                    <?php break; case 'post-link': ?>
+                        <div class="post-link__wrapper">
                             <a class="post-link__external" href="http://" title="Перейти по ссылке">
                                 <div class="post-link__info-wrapper">
                                     <div class="post-link__icon-wrapper">
@@ -282,15 +272,13 @@ $cards = [
                                 <span><?=$card['content']?></span>
                             </a>
                         </div>
-                        <?php
-                            break;
-                        case 'post-video': ?>
-                            <div class="post-video__block">
-                            <div class="post-video__preview">
-                                <?
-                                // =embed_youtube_cover(/* вставьте ссылку на видео */);
-                                ?>
-                                <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+                    <?php break; case 'post-video': ?>
+                        <div class="post-video__block">
+                        <div class="post-video__preview">
+                            <?
+                            // =embed_youtube_cover(/* вставьте ссылку на видео */);
+                            ?>
+                            <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
                             </div>
                             <a href="post-details.html" class="post-video__play-big button">
                                 <svg class="post-video__play-big-icon" width="14" height="14">
@@ -299,9 +287,7 @@ $cards = [
                                 <span class="visually-hidden">Запустить проигрыватель</span>
                             </a>
                         </div>
-                        <?php
-                    }
-                    ?>
+                    <?php endswitch ?>
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
