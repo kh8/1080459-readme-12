@@ -241,30 +241,30 @@ $cards = [
             </div>
         </div>
         <div class="popular__posts">
-            <?php foreach($cards as $key => $val): ?>
-                <article class="popular__post post <?=$val['type']?>">
+            <?php foreach($cards as $card): ?>
+                <article class="popular__post post <?=$card['type']?>">
                 <header class="post__header">
-                    <h2><?=$val['title']?></h2>
+                    <h2><?=$card['title']?></h2>
                 </header>
                 <div class="post__main">
                     <?php
-                    switch ($val['type']) {
+                    switch ($card['type']) {
                         case 'post-quote':?>
                             <blockquote>
                             <p>
-                                <?=$val['content'] ?>
+                                <?=$card['content'] ?>
                             </p>
                             <cite>Неизвестный Автор</cite>
                             </blockquote>
                             <?php
                             break;
                         case 'post-text': ?>
-                            <p><?=$val['content']?></p>
+                            <p><?=$card['content']?></p>
                         <?php
                             break;
                         case 'post-photo': ?>
                             <div class="post-photo__image-wrapper">
-                            <img src="img/<?=$val['content'];?>" alt="Фото от пользователя" width="360" height="240">
+                            <img src="img/<?=$card['content'];?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
                             <?php
                             break;
@@ -276,10 +276,10 @@ $cards = [
                                         <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                                     </div>
                                     <div class="post-link__info">
-                                        <h3><?=$val['title'];?></h3>
+                                        <h3><?=$card['title'];?></h3>
                                     </div>
                                 </div>
-                                <span><?=$val['content']?></span>
+                                <span><?=$card['content']?></span>
                             </a>
                         </div>
                         <?php
@@ -308,10 +308,10 @@ $cards = [
                         <a class="post__author-link" href="#" title="Автор">
                             <div class="post__avatar-wrapper">
                                 <!--укажите путь к файлу аватара-->
-                                <img class="post__author-avatar" src="img/<?=$val['avatar']?>" alt="Аватар пользователя">
+                                <img class="post__author-avatar" src="img/<?=$card['avatar']?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><?=$val['author']?></b>
+                                <b class="post__author-name"><?=$card['author']?></b>
                                 <time class="post__time" datetime="">дата</time>
                             </div>
                         </a>
