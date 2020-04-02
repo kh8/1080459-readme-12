@@ -14,7 +14,7 @@ $cards = [
     [
         'title' => 'Игра престолов',
         'type' => 'post-text',
-        'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!',
+        'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!Не могу дождаться начала финального сезона своего любимого сериала!Не могу дождаться начала финального сезона своего любимого сериала!Не могу дождаться начала финального сезона своего любимого сериала!Не могу дождаться начала финального сезона своего любимого сериала!Не могу дождаться начала финального сезона своего любимого сериала!',
         'author' => 'Владик',
         'avatar' => 'userpic.jpg'
     ],
@@ -40,6 +40,23 @@ $cards = [
         'avatar' => 'userpic.jpg'
     ],
 ];
+
+function truncate_text(string $text, int $truncate_length ){
+    if (mb_strlen($text) >= $truncate_length) {
+        $words = explode(" ", $text);
+        $i = 0;
+        while ($current_length + $i - 1 < $truncate_length) {
+            $current_length += mb_strlen($words[$i]);
+            $i++;
+        }
+        $final_text = implode(" ", array_slice($words, 0, $i - 1));
+        $final_text = '<p>'.$final_text.'... </p><a class="post-text__more-link" href="#">Читать далее</a>';
+    } else {
+        $final_text = $text;
+    }
+    return $final_text;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -253,7 +270,7 @@ $cards = [
                             <cite>Неизвестный Автор</cite>
                         </blockquote>
                     <?php break; case 'post-text': ?>
-                        <p><?=$card['content']?></p>
+                        <?=truncate_text($card['content'], 300)?>
                     <?php break; case 'post-photo': ?>
                         <div class="post-photo__image-wrapper">
                             <img src="img/<?=$card['content'];?>" alt="Фото от пользователя" width="360" height="240">
