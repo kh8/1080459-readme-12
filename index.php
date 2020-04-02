@@ -41,7 +41,8 @@ $cards = [
     ],
 ];
 
-    function truncate_text(string $text, int $truncate_length = 300) {
+function truncate_text(string $text, int $truncate_length = 300)
+{
     if (mb_strlen($text) <= $truncate_length) {
         $final_text = $text;
     } else {
