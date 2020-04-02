@@ -47,8 +47,9 @@ $cards = [
     } else {
         $words = explode(" ", $text);
         $i = 0;
-        while ($current_length + $i - 1 < $truncate_length) {
+        while ($current_length - 1 < $truncate_length) {
             $current_length += mb_strlen($words[$i]);
+            $current_length++;
             $i++;
         }
         $final_text = implode(" ", array_slice($words, 0, $i - 1));
