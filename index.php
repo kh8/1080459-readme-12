@@ -41,8 +41,10 @@ $cards = [
     ],
 ];
 
-function truncate_text(string $text, int $truncate_length ){
-    if (mb_strlen($text) >= $truncate_length) {
+    function truncate_text(string $text, int $truncate_length = 300) {
+    if (mb_strlen($text) <= $truncate_length) {
+        $final_text = $text;
+    } else {
         $words = explode(" ", $text);
         $i = 0;
         while ($current_length + $i - 1 < $truncate_length) {
@@ -51,8 +53,6 @@ function truncate_text(string $text, int $truncate_length ){
         }
         $final_text = implode(" ", array_slice($words, 0, $i - 1));
         $final_text .= '...';
-    } else {
-        $final_text = $text;
     }
     return $final_text;
 }
@@ -270,7 +270,7 @@ function truncate_text(string $text, int $truncate_length ){
                             <cite>Неизвестный Автор</cite>
                         </blockquote>
                     <?php break; case 'post-text': ?>
-                        <p><?=truncate_text($card['content'], 300)?></p>
+                        <p><?=truncate_text($card['content'])?></p>
                         <?php if (mb_strlen($card['content']) > 300):?>
                             <a class="post-text__more-link" href="#">Читать далее</a>
                         <?php endif; ?>
