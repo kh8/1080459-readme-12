@@ -2,6 +2,7 @@
 
 $user_name = 'Михаил'; // укажите здесь ваше имя
 $title = 'ReadMe';
+$is_auth = rand(0,1);
 $cards = [
     [
         'title' => 'Цитата',
@@ -39,7 +40,6 @@ $cards = [
         'avatar' => 'userpic.jpg'
     ],
 ];
-
 function truncate_text(string $text, int $truncate_length = 300)
 {
     if (mb_strlen($text) <= $truncate_length) {
@@ -60,7 +60,5 @@ function truncate_text(string $text, int $truncate_length = 300)
 
 require_once('helpers.php');
 $page_content = include_template('main.php', ['cards' => $cards]);
-$layout_content = include_template('layout.php', ['content' => $page_content, 'user' => $user_name, 'title' => $title]);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'user' => $user_name, 'title' => $title, 'is_auth' => $is_auth]);
 print($layout_content);
-
-?>
