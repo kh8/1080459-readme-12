@@ -144,35 +144,8 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?=$card['author']?></b>
-                                <?php
-                                    date_default_timezone_set('Asia/Yekaterinburg');
-                                    $random_date = generate_random_date($index);
-                                    $post_date = date_create($random_date);
-                                    $current_date = date_create();
-                                    $interval = date_diff($post_date, $current_date);
-                                    $interval_in_minutes = $interval->days * 24 * 60;
-                                    $interval_in_minutes += $interval->h * 60;
-                                    $interval_in_minutes += $interval->i;
-                                    switch (true):
-                                        case $interval_in_minutes < 60:
-                                            $post_time_relative = $interval->i.' '.get_noun_plural_form($interval->i,'минута','минуты','минут').' назад';
-                                        break;
-                                        case $interval_in_minutes < 1440:
-                                            $post_time_relative = $interval->h.' '.get_noun_plural_form($interval->h,'час','часа','часов').' назад';
-                                        break;
-                                        case $interval_in_minutes < 10080:
-                                            $post_time_relative = $interval->d.' '.get_noun_plural_form($interval->d,'день','дня','дней').' назад';
-                                        break;
-                                        case $interval_in_minutes < 50400:
-                                            $weeks = floor($interval->d/7);
-                                            $post_time_relative = $weeks.' '.get_noun_plural_form($weeks,'неделя','недели','недель').' назад';
-                                        break;
-                                        default:
-                                            $post_time_relative = $interval->m.' '.get_noun_plural_form($interval->m,'месяц','месяца','месяцев').' назад';
-                                        break;
-                                    endswitch
-                                ?>
-                                <time class="post__time" datetime="<?= $random_date ?>" title="<?= $post_date->format('d.m.Y H:i'); ?>"><?= $post_time_relative ?></time>
+                                <?php $post_time = get_post_data($index)['post_time'] ?>
+                                <time class="post__time" datetime="<?= $post_time->format('Y-m-d H:i:s') ?>" title="<?= $post_time->format('d.m.Y H:i') ?>"><?= absolute_time_to_relative($post_time) ?></time>
                             </div>
                         </a>
                     </div>
