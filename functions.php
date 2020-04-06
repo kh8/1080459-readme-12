@@ -2,7 +2,7 @@
 function truncate_text(string $text, int $truncate_length = 300)
 {
     if (mb_strlen($text) <= $truncate_length) {
-        $final_text = $text;
+        return $text;
     } else {
         $words = explode(" ", $text);
         $i = 0;
@@ -13,11 +13,11 @@ function truncate_text(string $text, int $truncate_length = 300)
         }
         $final_text = implode(" ", array_slice($words, 0, $i - 1));
         $final_text .= '...';
+        return $final_text;
     }
-    return $final_text;
 }
 
-function get_post_data($post_id)
+function get_post_data($post_id): array
 {
     $random_date = generate_random_date($post_id);
     $post_date = date_create($random_date);
