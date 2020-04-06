@@ -1,5 +1,5 @@
 <?php
-function truncate_text(string $text, int $truncate_length = 300)
+function truncate_text(string $text, int $truncate_length = 300): string
 {
     if (mb_strlen($text) <= $truncate_length) {
         return $text;
@@ -25,7 +25,7 @@ function get_post_data($post_id): array
     return $post_data;
 }
 
-function absolute_time_to_relative($absolute_time)
+function absolute_time_to_relative($absolute_time): string
 {
     date_default_timezone_set('Asia/Yekaterinburg');
     $current_date = date_create();
