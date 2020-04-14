@@ -144,7 +144,7 @@
                             </div>
                             <div class="post__info">
                                 <b class="post__author-name"><?=$card['author']?></b>
-                                <?php $post_time = get_post_data($index)['post_time'] ?>
+                                <?php $post_time = get_post_time($index) ?>
                                 <time class="post__time" datetime="<?= $post_time->format('Y-m-d H:i:s') ?>" title="<?= $post_time->format('d.m.Y H:i') ?>"><?= absolute_time_to_relative($post_time) ?></time>
                             </div>
                         </a>

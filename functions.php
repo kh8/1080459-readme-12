@@ -17,11 +17,10 @@ function truncate_text(string $text, int $truncate_length = 300): string
     }
 }
 
-function get_post_time($post_id): array
+function get_post_time($post_id): DateTime
 {
     $random_date = generate_random_date($post_id);
-    $post_date = date_create($random_date);
-    return $post_time;
+    return date_create($random_date);
 }
 
 function absolute_time_to_relative($absolute_time): string
