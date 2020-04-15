@@ -18,11 +18,11 @@ INSERT into posts SET title = 'Лучшие курсы', post_type = '4', conten
 INSERT into comments SET user_id = '2', post_id = '4', content = 'Отличные фото!';
 INSERT into comments SET user_id = '1', post_id = '5', content = 'Сейчас там учусь';
 /* получить список постов с сортировкой по популярности и вместе с именами авторов и типом контента */
-SELECT users.username, posts.content, posts.view_count, content_types.type_name FROM posts JOIN users ON posts.author_id=users.id JOIN content_types ON posts.post_type=content_types.id ORDER  BY view_count;
+SELECT users.username, posts.content, posts.view_count, content_types.type_name FROM posts INNER JOIN users ON posts.author_id=users.id INNER JOIN content_types ON posts.post_type=content_types.id ORDER  BY view_count;
 /* получить список постов для конкретного пользователя */
-SELECT content FROM posts WHERE author_id=1;
+SELECT * FROM posts WHERE author_id=1;
 /* получить список комментариев для одного поста, в комментариях должен быть логин пользователя */
-SELECT comments.content, users.username FROM comments JOIN users ON comments.user_id=users.id WHERE comments.post_id=4;
+SELECT comments.content, users.username FROM comments INNER JOIN users ON comments.user_id=users.id WHERE comments.post_id=4;
 /* добавить лайк к посту */
 INSERT into likes SET user_id=1, post_id=3;
 /* подписаться на пользователя */
