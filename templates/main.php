@@ -1,28 +1,6 @@
 <div class="container">
     <h1 class="page__title page__title--popular">Популярное</h1>
 </div>
-<?php
-    $con = mysqli_connect("localhost", "root", "", "readme");
-    if ($con == false) {
-        $error = mysqli_connect_error();
-    } else {
-        mysqli_set_charset($con, "utf8");
-        $sql = "SELECT users.username, users.avatar, posts.title, posts.content, posts.view_count, content_types.type_class FROM posts INNER JOIN users ON posts.author_id=users.id INNER JOIN content_types ON posts.post_type=content_types.id ORDER  BY view_count DESC;";
-        $result = mysqli_query($con, $sql);
-        if (!$result) {
-            $error = mysqli_error($con);
-        } else {
-            $cards = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-        $sql = "SELECT * FROM content_types;";
-        $result = mysqli_query($con, $sql);
-        if (!$result) {
-            $error = mysqli_error($con);
-        } else {
-            $content_types = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-    }
-?>
 <div class="popular container">
     <div class="popular__filters-wrapper">
         <div class="popular__sorting sorting">
