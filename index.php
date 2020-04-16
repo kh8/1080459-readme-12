@@ -13,13 +13,7 @@ if ($con == false) {
 } else {
     mysqli_set_charset($con, "utf8");
     $cards = select_query($con, $select_posts_users_query);
-    if ($cards['error']) {
-        print($cards['error']);
-    }
     $content_types = select_query($con, $select_content_types_query);
-    if ($content_types['error']) {
-        print($content_types['error']);
-    }
 }
 $page_content = include_template('main.php', ['cards' => $cards, 'content_types' => $content_types]);
 $layout_content = include_template('layout.php', ['content' => $page_content, 'user' => $user_name, 'title' => $title, 'is_auth' => $is_auth]);
