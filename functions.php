@@ -45,3 +45,12 @@ function absolute_time_to_relative($absolute_time): string
     }
     return $relative_time;
 }
+
+function select_query($connection, $sql): ?array
+{
+    $result = mysqli_query($connection, $sql);
+    if (!$result) {
+        return null;
+    };
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
