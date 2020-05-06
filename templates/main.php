@@ -1,5 +1,6 @@
 <div class="container">
     <h1 class="page__title page__title--popular">Популярное</h1>
+    <h2><?=$select_post_by_content_type_query?></h2>
 </div>
 <div class="popular container">
     <div class="popular__filters-wrapper">
@@ -36,16 +37,16 @@
             <b class="popular__filters-caption filters__caption">Тип контента:</b>
             <ul class="popular__filters-list filters__list">
                 <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                    <a class="filters__button filters__button--ellipse filters__button--all filters__button--active" href="#">
+                    <a class="filters__button filters__button--ellipse filters__button--all <?php if ($post_type == ''):?>filters__button--active <?php endif; ?>" href="#">
                         <span>Все</span>
                     </a>
                 </li>
                 <?php foreach($content_types as $index => $content_type): ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--<?=$content_type['type_class']?> button" href="#">
+                        <a class="button filters__button filters__button--<?=$content_type['type_class'];?> <?php if ($post_type == $content_type['id']):?>filters__button--active <?php endif; ?>" href="index.php?post_type=<?=$content_type['id'];?>">
                             <span class="visually-hidden"><?=$content_type['type_name'];?></span>
                             <svg class="filters__icon" width="22" height="21">
-                                <use xlink:href="#icon-filter-<?=$content_type['type_class']?>"></use>
+                                <use xlink:href="#icon-filter-<?=$content_type['type_class'];?>"></use>
                             </svg>
                         </a>
                     </li>
@@ -54,25 +55,25 @@
         </div>
     </div>
     <div class="popular__posts">
-        <?php foreach($cards as $index => $card): ?>
-            <article class="popular__post post post-<?=$card['type_class']?>">
+        <?php foreach($posts as $index => $post): ?>
+            <article class="popular__post post post-<?=$post['type_class'];?>">
             <header class="post__header">
-                <h2><?=$card['title']?></h2>
+                <h2><a href="post.php?id=<?=$post['id']?>"><?=$post['title'];?></a></h2>
             </header>
             <div class="post__main">
-                <?php switch($card['type_class']): case 'quote': ?>
+                <?php switch($post['type_class']): case 'quote': ?>
                     <blockquote>
-                        <p><?=htmlspecialchars($card['content']) ?></p>
-                        <cite>Неизвестный Автор</cite>
+                        <p><?=htmlspecialchars($post['content']) ?></p>
+                        <cite><?=htmlspecialchars($post['quote_author']) ?></cite>
                     </blockquote>
                 <?php break; case 'text': ?>
-                    <p><?=htmlspecialchars(truncate_text($card['content']))?></p>
-                    <?php if (mb_strlen($card['content']) > 300):?>
+                    <p><?=htmlspecialchars(truncate_text($post['content']));?></p>
+                    <?php if (mb_strlen($post['content']) > 300):?>
                         <a class="post-text__more-link" href="#">Читать далее</a>
                     <?php endif; ?>
                 <?php break; case 'photo': ?>
                     <div class="post-photo__image-wrapper">
-                        <img src="img/<?=$card['content'];?>" alt="Фото от пользователя" width="360" height="240">
+                        <img src="img/<?=$post['content'];?>" alt="Фото от пользователя" width="360" height="240">
                     </div>
                 <?php break; case 'link': ?>
                     <div class="post-link__wrapper">
@@ -82,10 +83,10 @@
                                     <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                                 </div>
                                 <div class="post-link__info">
-                                    <h3><?=$card['title'];?></h3>
+                                    <h3><?=$post['title'];?></h3>
                                 </div>
                             </div>
-                            <span><?=htmlspecialchars($card['content'])?></span>
+                            <span><?=htmlspecialchars($post['content']);?></span>
                         </a>
                     </div>
                 <?php break; case 'video': ?>
@@ -109,13 +110,12 @@
                 <div class="post__author">
                     <a class="post__author-link" href="#" title="Автор">
                         <div class="post__avatar-wrapper">
-                            <!--укажите путь к файлу аватара-->
-                            <img class="post__author-avatar" src="img/<?=$card['avatar']?>" alt="Аватар пользователя">
+                            <img class="post__author-avatar" src="img/<?=$post['avatar'];?>" alt="Аватар пользователя">
                         </div>
                         <div class="post__info">
-                            <b class="post__author-name"><?=$card['username']?></b>
+                            <b class="post__author-name"><?=$post['username'];?></b>
                             <?php $post_time = get_post_time($index) ?>
-                            <time class="post__time" datetime="<?= $post_time->format('Y-m-d H:i:s') ?>" title="<?= $post_time->format('d.m.Y H:i') ?>"><?= absolute_time_to_relative($post_time) ?></time>
+                            <time class="post__time" datetime="<?= $post_time->format('Y-m-d H:i:s'); ?>" title="<?= $post_time->format('d.m.Y H:i'); ?>"><?= absolute_time_to_relative($post_time); ?></time>
                         </div>
                     </a>
                 </div>
