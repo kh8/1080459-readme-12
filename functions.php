@@ -45,3 +45,10 @@ function absolute_time_to_relative($absolute_time): string
     }
     return $relative_time;
 }
+
+function secure_query(mysqli $con, string $sql, string $type, string $var): mysqli_result {
+    $prepared_sql = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($prepared_sql, $type, $var);
+    mysqli_stmt_execute($prepared_sql);
+    return mysqli_stmt_get_result($prepared_sql);
+}
