@@ -52,3 +52,10 @@ function secure_query(mysqli $con, string $sql, string $type, string $var): mysq
     mysqli_stmt_execute($prepared_sql);
     return mysqli_stmt_get_result($prepared_sql);
 }
+
+function display_404_page() {
+    $page_content = include_template('404.php');
+    $layout_content = include_template('layout.php',['content' => $page_content]);
+    print($layout_content);
+    http_response_code(404);
+}
