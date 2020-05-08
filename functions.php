@@ -46,11 +46,16 @@ function absolute_time_to_relative($absolute_time): string
     return $relative_time;
 }
 
-function select_query($connection, $sql): ?array
-{
-    $result = mysqli_query($connection, $sql);
-    if (!$result) {
-        return null;
-    };
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+function secure_query(mysqli $con, string $sql, string $type, string $var): mysqli_result {
+    $prepared_sql = mysqli_prepare($con, $sql);
+    mysqli_stmt_bind_param($prepared_sql, $type, $var);
+    mysqli_stmt_execute($prepared_sql);
+    return mysqli_stmt_get_result($prepared_sql);
+}
+
+function display_404_page() {
+    $page_content = include_template('404.php');
+    $layout_content = include_template('layout.php',['content' => $page_content]);
+    print($layout_content);
+    http_response_code(404);
 }
