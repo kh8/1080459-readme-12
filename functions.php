@@ -46,11 +46,11 @@ function absolute_time_to_relative($absolute_time): string
     return $relative_time;
 }
 
-function secure_query(mysqli $con, string $sql, string $type, string $var): mysqli_result {
-    $prepared_sql = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($prepared_sql, $type, $var);
-    mysqli_stmt_execute($prepared_sql);
-    return mysqli_stmt_get_result($prepared_sql);
+function secure_query(mysqli $con, string $sql, string $type, ...$params) {
+        $prepared_sql = mysqli_prepare($con, $sql);
+        mysqli_stmt_bind_param($prepared_sql, $type, ...$params);
+        mysqli_stmt_execute($prepared_sql);
+        return mysqli_stmt_get_result($prepared_sql);
 }
 
 function display_404_page() {
@@ -58,4 +58,41 @@ function display_404_page() {
     $layout_content = include_template('layout.php',['content' => $page_content]);
     print($layout_content);
     http_response_code(404);
+}
+
+function validateFilled($var) {
+    if (empty($var)) {
+        return 'Это поле должно быть заполнено';
+    }
+}
+
+function validateURL($URL) {
+    if (!filter_var($URL, FILTER_VALIDATE_URL)) {
+        return 'Некорретный URL-адрес';
+    }
+}
+
+function validateVideoURL($URL) {
+    if (empty(check_youtube_url($URL))) {
+        return 'По ссылке отсутствует видео';
+    }
+}
+
+function validateImageURL($URL) {
+    if (!$content = @file_get_contents($URL)) {
+        return 'По ссылке отсутствует изображение';
+    }
+}
+
+function validateImageFile($file) {
+    if ($file['error'] != 0) {
+        return 'Код ошибки:'.$file['error'];
+    } else {
+        $file_info = finfo_open(FILEINFO_MIME_TYPE);
+        $file_name = $file['tmp_name'];
+        $file_type = finfo_file($file_info, $file_name);
+        if (!in_array($file_type, ['image/png','image/jpeg', 'image/gif'])) {
+            return 'Недопустимый тип изображения';
+        }
+    }
 }

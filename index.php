@@ -3,7 +3,7 @@ require_once('helpers.php');
 require_once('functions.php');
 $user_name = 'Михаил';
 $title = 'ReadMe';
-$is_auth = rand(0,1);
+$is_auth = 1;
 $select_content_types_query = 'SELECT * FROM content_types;';
 $con = mysqli_connect("localhost", "root", "", "readme");
 if ($con == false) {
