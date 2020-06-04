@@ -61,25 +61,35 @@ function display_404_page() {
 }
 
 function validateFilled($var) {
-    if (empty($var)) {
+    if (empty($_POST[$var])) {
         return 'Это поле должно быть заполнено';
     }
 }
 
-function validateURL($URL) {
-    if (!filter_var($URL, FILTER_VALIDATE_URL)) {
+function validateURL($var) {
+    if (empty($_POST[$var])) {
+        return 'Это поле должно быть заполнено';
+    } elseif (!filter_var($_POST[$var], FILTER_VALIDATE_URL)) {
         return 'Некорретный URL-адрес';
     }
 }
 
-function validateVideoURL($URL) {
-    if (empty(check_youtube_url($URL))) {
+function validateVideoURL($var) {
+    if (empty($_POST[$var])) {
+        return 'Это поле должно быть заполнено';
+    } elseif (!filter_var($_POST[$var], FILTER_VALIDATE_URL)) {
+        return 'Некорретный URL-адрес';
+    } elseif (empty(check_youtube_url($_POST[$var]))) {
         return 'По ссылке отсутствует видео';
     }
 }
 
-function validateImageURL($URL) {
-    if (!$content = @file_get_contents($URL)) {
+function validateImageURL($var) {
+    if (empty($_POST[$var])) {
+        return 'Это поле должно быть заполнено';
+    } elseif (!filter_var($_POST[$var], FILTER_VALIDATE_URL)) {
+        return 'Некорретный URL-адрес';
+    } elseif (!$content = @file_get_contents($_POST[$var])) {
         return 'По ссылке отсутствует изображение';
     }
 }
