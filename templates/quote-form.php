@@ -18,34 +18,34 @@
         <div class="adding-post__input-wrapper form__textarea-wrapper">
             <label class="adding-post__label form__label" for="cite-text">Текст цитаты <span class="form__input-required">*</span></label>
             <div class="form__input-section <?php if (!empty($field_error['content'])):?>form__input-section--error<?php endif; ?>">
-            <textarea class="adding-post__textarea adding-post__textarea--quote form__textarea form__input" id="cite-text" placeholder="Текст цитаты" name="content"><?= $field_value['content'] ?></textarea>
-            <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
-            <div class="form__error-text">
-                <h3 class="form__error-title">Ошибка</h3>
-                <p class="form__error-desc"><?= $field_error['content'] ?></p>
-            </div>
+                <textarea class="adding-post__textarea adding-post__textarea--quote form__textarea form__input" id="cite-text" placeholder="Текст цитаты" name="content"><?= $field_value['content'] ?></textarea>
+                <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
+                <div class="form__error-text">
+                    <h3 class="form__error-title">Ошибка</h3>
+                    <p class="form__error-desc"><?= $field_error['content'] ?></p>
+                </div>
             </div>
         </div>
         <div class="adding-post__textarea-wrapper form__input-wrapper">
             <label class="adding-post__label form__label" for="quote-author">Автор <span class="form__input-required">*</span></label>
             <div class="form__input-section <?php if (!empty($field_error['quote-author'])):?>form__input-section--error<?php endif; ?>">
-            <input class="adding-post__input form__input" id="quote-author" type="text" name="quote-author" placeholder="Введите автора цитаты" value=<?= $field_value['quote-author'] ?>>
-            <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
-            <div class="form__error-text">
-                <h3 class="form__error-title">Ошибка</h3>
-                <p class="form__error-desc"><?= $field_error['quote-author'] ?></p>
-            </div>
+                <input class="adding-post__input form__input" id="quote-author" type="text" name="quote-author" placeholder="Введите автора цитаты" value=<?= $field_value['quote-author'] ?>>
+                <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
+                <div class="form__error-text">
+                    <h3 class="form__error-title">Ошибка</h3>
+                    <p class="form__error-desc"><?= $field_error['quote-author'] ?></p>
+                </div>
             </div>
         </div>
         <div class="adding-post__input-wrapper form__input-wrapper">
             <label class="adding-post__label form__label" for="cite-tags">Теги</label>
             <div class="form__input-section <?php if (!empty($field_error['tags'])):?>form__input-section--error<?php endif; ?>">
-            <input class="adding-post__input form__input" id="cite-tags" type="text" name="tags" placeholder="Введите теги" value=<?= $field_value['tags'] ?>>
-            <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
-            <div class="form__error-text">
-                <h3 class="form__error-title">Заголовок сообщения</h3>
-                <p class="form__error-desc">Текст сообщения об ошибке, подробно объясняющий, что не так.</p>
-            </div>
+                <input class="adding-post__input form__input" id="cite-tags" type="text" name="tags" placeholder="Введите теги" value=<?= $field_value['tags'] ?>>
+                <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
+                <div class="form__error-text">
+                    <h3 class="form__error-title">Заголовок сообщения</h3>
+                    <p class="form__error-desc">Текст сообщения об ошибке, подробно объясняющий, что не так.</p>
+                </div>
             </div>
         </div>
         </div>
