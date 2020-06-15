@@ -1,18 +1,13 @@
 <?php
 require_once('helpers.php');
 require_once('functions.php');
+require_once('db.php');
+
 $user_name = 'Михаил';
 $title = 'ReadMe';
-$is_auth = rand(0,1);
+$is_auth = 1;
 $select_content_types_query = 'SELECT * FROM content_types;';
-$con = mysqli_connect("localhost", "root", "", "readme");
-if ($con == false) {
-    $error = mysqli_connect_error();
-    print($error);
-    http_response_code(500);
-    exit();
-}
-mysqli_set_charset($con, "utf8");
+$con = db_connect("localhost", "root", "", "readme");
 if (isset($_GET['post_type'])) {
     $post_type = $_GET['post_type'];
     $select_posts_query = "SELECT posts.*, users.username, users.avatar, content_types.type_class FROM posts INNER JOIN users ON posts.author_id=users.id INNER JOIN content_types ON posts.post_type=content_types.id WHERE content_types.id = ? ORDER BY view_count DESC;";

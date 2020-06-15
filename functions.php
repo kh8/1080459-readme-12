@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
+ * @param string $name Путь к файлу шаблона относительно папки templates
+ * @param array $data Ассоциативный массив с данными для шаблона
+ * @return string Итоговый HTML
+ */
+
+
 function truncate_text(string $text, int $truncate_length = 300): string
 {
     if (mb_strlen($text) <= $truncate_length) {
@@ -46,9 +55,9 @@ function absolute_time_to_relative($absolute_time): string
     return $relative_time;
 }
 
-function secure_query(mysqli $con, string $sql, string $type, string $var): mysqli_result {
+function secure_query(mysqli $con, string $sql, string $type, ...$params) {
     $prepared_sql = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($prepared_sql, $type, $var);
+    mysqli_stmt_bind_param($prepared_sql, $type, ...$params);
     mysqli_stmt_execute($prepared_sql);
     return mysqli_stmt_get_result($prepared_sql);
 }
@@ -58,4 +67,44 @@ function display_404_page() {
     $layout_content = include_template('layout.php',['content' => $page_content]);
     print($layout_content);
     http_response_code(404);
+}
+
+function validateFilled($var) {
+    if (empty($_POST[$var])) {
+        return 'Это поле должно быть заполнено';
+    }
+}
+
+function validateURL($var) {
+    if (!filter_var($_POST[$var], FILTER_VALIDATE_URL)) {
+        return 'Некорретный URL-адрес';
+    }
+}
+
+function validateImageURLContent($var) {
+    if (!$content = @file_get_contents($_POST[$var])) {
+        return 'По ссылке отсутствует изображение';
+    }
+}
+
+function validateImageFile($file) {
+    if ($file['error'] != 0) {
+        return 'Код ошибки:'.$file['error'];
+    } else {
+        $file_info = finfo_open(FILEINFO_MIME_TYPE);
+        $file_name = $file['tmp_name'];
+        $file_type = finfo_file($file_info, $file_name);
+        if (!in_array($file_type, ['image/png','image/jpeg', 'image/gif'])) {
+            return 'Недопустимый тип изображения';
+        }
+    }
+}
+
+function validate($field, $validation_rules) {
+    foreach ($validation_rules as $validation_rule) {
+        if (!function_exists($validation_rule)) {
+            return 'Функции валидации ' . $validation_rule. ' не существует';
+        }
+        return $validation_rule($field);
+    }
 }
