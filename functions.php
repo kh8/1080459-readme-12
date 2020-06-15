@@ -105,8 +105,6 @@ function validate($field, $validation_rules) {
         if (!function_exists($validation_rule)) {
             return 'Функции валидации ' . $validation_rule. ' не существует';
         }
-        if ($result = $validation_rule($field)) {
-            return $result;
-        }
+        return $validation_rule($field);
     }
 }

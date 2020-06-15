@@ -55,7 +55,7 @@ if ((count($_POST) > 0) && isset($_POST['form-type'])){
             case 'quote':
                 secure_query($con, $add_quote_post_query, 'siss', $_POST['heading'], $post_types[$form_type], $_POST['content'], $_POST['quote-author']);
                 $post_id = mysqli_insert_id($con);
-            break;
+                break;
             case 'text':
                 secure_query($con, $add_text_post_query, 'sis', $_POST['heading'], $post_types[$form_type], $_POST['content']);
                 $post_id = mysqli_insert_id($con);
@@ -79,7 +79,7 @@ if ((count($_POST) > 0) && isset($_POST['form-type'])){
                 }
                 secure_query($con, $add_photo_post_query, 'siss', $_POST['heading'], $post_types[$form_type], $_POST['content'], $file_url);
                 $post_id = mysqli_insert_id($con);
-            }
+        }
         $new_tags = array_unique(explode(' ', $_POST['tags']));
         $select_tags_query = "SELECT * FROM hashtags WHERE tag_name in ('".implode("','",$new_tags)."')";
         $tags_mysqli = mysqli_query($con, $select_tags_query);
