@@ -7,7 +7,6 @@
  * @return string Итоговый HTML
  */
 
-
 function truncate_text(string $text, int $truncate_length = 300): string
 {
     if (mb_strlen($text) <= $truncate_length) {
@@ -81,6 +80,27 @@ function validateURL($var) {
     }
 }
 
+function validateRepeatPassword($repeatPassword) {
+    if ($_POST['password-repeat'] !== $_POST['password']) {
+        return 'Пароли не совпадают';
+    }
+}
+
+function validateCorrectEmail($var) {
+    if (!filter_var($_POST[$var], FILTER_VALIDATE_EMAIL)) {
+        return 'Некорретный email';
+    }
+}
+
+function validateEmailExist($email) {
+    $con = db_connect("localhost", "root", "", "readme");
+    $select_user_by_email_query = "SELECT * FROM users WHERE email = ?";
+    $result = secure_query($con, $select_user_by_email_query, 's', $_POST['email']);
+    if (mysqli_num_rows($result) > 0) {
+        return 'Пользователь с таким email уже существует';
+    }
+}
+
 function validateImageURLContent($var) {
     if (!$content = @file_get_contents($_POST[$var])) {
         return 'По ссылке отсутствует изображение';
@@ -103,8 +123,22 @@ function validateImageFile($file) {
 function validate($field, $validation_rules) {
     foreach ($validation_rules as $validation_rule) {
         if (!function_exists($validation_rule)) {
-            return 'Функции валидации ' . $validation_rule. ' не существует';
+            return 'Функции валидацxии ' . $validation_rule. ' не существует';
         }
-        return $validation_rule($field);
+        if ($result = $validation_rule($field))  {
+            return $result;
+        }
+    }
+}
+
+function save_image($img) {
+    if ($_FILES[$img]['error'] != 0) {
+        return $file_name = $_POST[$img];
+    } else {
+        $file_name = $_FILES[$img]['name'];
+        $file_path = __DIR__ . '/uploads/' . '<br>';
+        $file_url = '/uploads/' . $file_name;
+        move_uploaded_file($_FILES[$img]['tmp_name'], $file_path . $file_name);
+        return $file_name;
     }
 }
