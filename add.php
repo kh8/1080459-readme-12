@@ -17,19 +17,19 @@ $validation_rules = [
     ],
     'link' => [
         'heading' => 'filled',
-        'tags' => 'filled',
-        'link-url' => 'filled|correctURL'
+        'link-url' => 'filled|correctURL',
+        'tags' => 'filled'
     ],
     'quote' => [
         'heading' => 'filled',
         'content' => 'filled',
-        'tags' => 'filled',
-        'quote-author' => 'filled'
+        'quote-author' => 'filled',
+        'tags' => 'filled'
     ],
     'video' => [
         'heading' => 'filled',
-        'tags' => 'filled',
-        'video-url' => 'filled|correctURL|youtubeurl'
+        'video-url' => 'filled|correctURL|youtubeurl',
+        'tags' => 'filled'
     ],
 ];
 

@@ -122,7 +122,7 @@ function validateCorrectEmail(array $inputArray, string $parameterName): ?string
 function validateExists(array $validationArray, string $parameterName, $tableName, $columnName, mysqli $dbConnection): ?string {
     $sql = "select count(*) as amount from $tableName where $columnName = ?";
     $prepared_sql = mysqli_prepare($dbConnection, $sql);
-    mysqli_stmt_bind_param($prepared_sql, 's', $validationArray[$parameterName]);
+    mysqli_stmt_bind_param($prepared_sql, 'si', $validationArray[$parameterName]);
     mysqli_stmt_execute($prepared_sql);
     mysqli_stmt_bind_result($prepared_sql, $amount);
     mysqli_stmt_fetch($prepared_sql);
