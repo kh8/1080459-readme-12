@@ -6,28 +6,25 @@ require_once('db.php');
 $add_user_query = "INSERT into users SET username = ?, email = ?, password = ?, avatar = ?";
 
 $validation_rules = [
-    'login' => ['validateFilled'],
-    'email' => ['validateFilled','validateEmailExist'],
-    'password' => ['validateFilled','validateRepeatPassword'],
-    'password-repeat' => ['validateFilled','validateRepeatPassword']
+    'email' => 'filled|correctemail|exists:users,email',
+    'login' => 'filled',
+    'password' => 'filled|repeatpassword',
+    'password-repeat' => 'filled|repeatpassword'
 ];
-$field_error_codes = [
-    'email' => 'Заголовок',
+$form_error_codes = [
+    'email' => 'Email',
     'login' => 'Логин',
     'password' => 'Пароль',
     'password-repeat' => 'Повторный пароль'
 ];
-
 $con = db_connect("localhost", "root", "", "readme");
 if (count($_POST) > 0) {
-    foreach ($_POST as $field_name => $val) {
-        $fields['values'][$field_name] = $_POST[$field_name];
-        if (isset($validation_rules[$field_name])) {
-            $fields['errors'][$field_name] = validate($field_name, $validation_rules[$field_name]);
-        }
+    foreach ($_POST as $field_name => $field_value) {
+        $form['values'][$field_name] = $field_value;
     }
-    $fields['errors'] = array_filter($fields['errors']);
-    if (empty($fields['errors'])) {
+    $form['errors'] = validate($form['values'], $validation_rules, $con);
+    $form['errors'] = array_filter($form['errors']);
+    if (empty($form['errors'])) {
         $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $avatar = save_image('userpic-file');
         secure_query($con, $add_user_query, 'ssss', $_POST['login'], $_POST['email'], $password_hash, $avatar);
@@ -37,6 +34,6 @@ if (count($_POST) > 0) {
     }
 }
 
-$page_content = include_template('registration.php', ['fields_values' => $fields['values'], 'fields_errors' => $fields['errors'], 'field_error_codes' => $field_error_codes]);
+$page_content = include_template('registration.php', ['form_values' => $form['values'], 'form_errors' => $form['errors'], 'form_error_codes' => $form_error_codes]);
 print($page_content);
 ?>

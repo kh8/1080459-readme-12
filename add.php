@@ -4,14 +4,35 @@ require_once('functions.php');
 require_once('db.php');
 
 $validation_rules = [
-    'heading' => ['validateFilled'],
-    'content' => ['validateFilled'],
-    'tags' => ['validateFilled'],
-    'link-url' => ['validateFilled', 'validateURL'],
-    'photo-url' => ['validateFilled', 'validateURL', 'validateImageURLContent'],
-    'video-url' => ['validateFilled', 'validateURL', 'check_youtube_url'],
-    'quote-author' => ['validateFilled']
+    'text' => [
+        'heading' => 'filled',
+        'content' => 'filled',
+        'tags' => 'filled'
+    ],
+    'photo' => [
+        'heading' => 'filled',
+        'photo-url' => 'filled|correctURL|ImageURLContent',
+        'tags' => 'filled',
+        'photo-file' => 'imgloaded'
+    ],
+    'link' => [
+        'heading' => 'filled',
+        'tags' => 'filled',
+        'link-url' => 'filled|correctURL'
+    ],
+    'quote' => [
+        'heading' => 'filled',
+        'content' => 'filled',
+        'tags' => 'filled',
+        'quote-author' => 'filled'
+    ],
+    'video' => [
+        'heading' => 'filled',
+        'tags' => 'filled',
+        'video-url' => 'filled|correctURL|youtubeurl'
+    ],
 ];
+
 $field_error_codes = [
     'heading' => 'Заголовок',
     'content' => 'Контент',
@@ -29,20 +50,20 @@ $content_types = mysqli_fetch_all($content_types_mysqli, MYSQLI_ASSOC);
 $post_types = array_column($content_types, 'id', 'type_class');
 if ((count($_POST) > 0) && isset($_POST['form-type'])){
     $form_type = $_POST['form-type'];
-    foreach ($_POST as $field_name => $val) {
-        $fields['values'][$form_type][$field_name] = $_POST[$field_name];
-        if (isset($validation_rules[$field_name])) {
-            $fields['errors'][$form_type][$field_name] = validate($field_name, $validation_rules[$field_name]);
-        }
+    foreach ($_POST as $field_name => $field_value) {
+        $form['values'][$field_name] = $field_value;
     }
-    if  ($form_type == 'photo') {
-        $fields['errors'][$form_type]['photo-file'] = validateImageFile($_FILES['photo-file']);
+    $form['values']['photo-file'] = $_FILES['photo-file'];
+    $form['errors'] = validate($form['values'], $validation_rules[$form_type], $con);
+    if (empty($form['errors']['photo-file'])) {
+        unset($form['errors']['photo-url']);
+        unset($form['values']['photo-url']);
+    } elseif (empty($form['errors']['photo-url'])) {
+        unset($form['errors']['photo-file']);
+        unset($form['values']['photo-file']);
     }
-    if (!empty($fields['errors'][$form_type]['photo-file']) && empty($fields['errors'][$form_type]['photo-url'])) {
-        unset($fields['errors'][$form_type]['photo-file']);
-    }
-    $fields['errors'][$form_type] = array_filter($fields['errors'][$form_type]);
-    if (empty($fields['errors'][$form_type])) {
+    $form['errors'] = array_filter($form['errors']);
+    if (empty($form['errors'])) {
         switch ($form_type) {
             case 'quote':
                 secure_query($con, $add_quote_post_query, 'siss', $_POST['heading'], $post_types[$form_type], $_POST['content'], $_POST['quote-author']);
@@ -61,13 +82,13 @@ if ((count($_POST) > 0) && isset($_POST['form-type'])){
                 $post_id = mysqli_insert_id($con);
                 break;
             case 'photo':
-                if ($_FILES['photo-file']['error'] != 0) {
-                    $file_url = $_POST['photo-url'];
-                } else {
-                    $file_name = $_FILES['photo-file']['name'];
-                    $file_path = __DIR__ . '/uploads/' . '<br>';
+                if (isset($form['values']['photo-file'])) {
+                    $file_name = $form['values']['photo-file']['name'];
+                    $file_path = __DIR__ . '/uploads/';
                     $file_url = '/uploads/' . $file_name;
                     move_uploaded_file($_FILES['photo-file']['tmp_name'], $file_path . $file_name);
+                } else {
+                    $file_url = $_POST['photo-url'];
                 }
                 secure_query($con, $add_photo_post_query, 'siss', $_POST['heading'], $post_types[$form_type], $_POST['content'], $file_url);
                 $post_id = mysqli_insert_id($con);
@@ -91,6 +112,6 @@ if ((count($_POST) > 0) && isset($_POST['form-type'])){
         header("Location: $URL");
     }
 }
-$page_content = include_template('adding-post.php', ['content_types' => $content_types, 'fields_values' => $fields['values'], 'fields_errors' => $fields['errors'], 'field_error_codes' => $field_error_codes, 'form_type' => $form_type]);
+$page_content = include_template('adding-post.php', ['content_types' => $content_types, 'form_values' => $form['values'], 'form_errors' => $form['errors'], 'field_error_codes' => $field_error_codes, 'form_type' => $form_type]);
 print($page_content);
 ?>

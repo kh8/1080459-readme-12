@@ -149,30 +149,6 @@ function include_template($name, array $data = [])
 }
 
 /**
- * Проверяет, что переданная ссылка ведет на публично доступное видео с youtube
- * @param string $youtube_url Ссылка на youtube видео
- * @return bool
- */
-function check_youtube_url($youtube_url)
-{
-    $res = false;
-    $id = extract_youtube_id($youtube_url);
-
-    if ($id) {
-        $api_data = ['id' => $id, 'part' => 'id,status', 'key' => 'AIzaSyBN-AXBnCPxO3HJfZZdZEHMybVfIgt16PQ'];
-        $url = "https://www.googleapis.com/youtube/v3/videos?" . http_build_query($api_data);
-
-        $resp = file_get_contents($url);
-
-        if ($resp && $json = json_decode($resp, true)) {
-            $res = $json['pageInfo']['totalResults'] > 0 && $json['items'][0]['status']['privacyStatus'] == 'public';
-        }
-    }
-
-    return $res;
-}
-
-/**
  * Возвращает код iframe для вставки youtube видео на страницу
  * @param string $youtube_url Ссылка на youtube видео
  * @return string

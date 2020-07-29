@@ -65,55 +65,55 @@
         <div class="form__text-inputs">
           <div class="registration__input-wrapper form__input-wrapper">
             <label class="registration__label form__label" for="registration-email">Электронная почта <span class="form__input-required">*</span></label>
-            <div class="form__input-section <?php if (!empty($fields_errors['email'])):?>form__input-section--error<?php endif; ?>">
-              <input class="registration__input form__input" id="registration-email" type="email" name="email" placeholder="Укажите эл.почту" value=<?= $fields_values['email'] ?>>
+            <div class="form__input-section <?php if (!empty($form_errors['email'])):?>form__input-section--error<?php endif; ?>">
+              <input class="registration__input form__input" id="registration-email" type="email" name="email" placeholder="Укажите эл.почту" value=<?= $form_values['email'] ?>>
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Ошибка</h3>
-                <p class="form__error-desc"><?= $fields_errors['email']?></p>
+                <p class="form__error-desc"><?= $form_errors['email']?></p>
               </div>
             </div>
           </div>
           <div class="registration__input-wrapper form__input-wrapper">
             <label class="registration__label form__label" for="registration-login">Логин <span class="form__input-required">*</span></label>
-            <div class="form__input-section <?php if (!empty($fields_errors['login'])):?>form__input-section--error<?php endif; ?>">
-              <input class="registration__input form__input" id="registration-login" type="text" name="login" placeholder="Укажите логин" value=<?= $fields_values['login'] ?>>
+            <div class="form__input-section <?php if (!empty($form_errors['login'])):?>form__input-section--error<?php endif; ?>">
+              <input class="registration__input form__input" id="registration-login" type="text" name="login" placeholder="Укажите логин" value=<?= $form_values['login'] ?>>
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Ошибка</h3>
-                <p class="form__error-desc"><?= $fields_errors['login'] ?></p>
+                <p class="form__error-desc"><?= $form_errors['login'] ?></p>
               </div>
             </div>
           </div>
           <div class="registration__input-wrapper form__input-wrapper">
             <label class="registration__label form__label" for="registration-password">Пароль<span class="form__input-required">*</span></label>
-            <div class="form__input-section <?php if (!empty($fields_errors['password'])):?>form__input-section--error<?php endif; ?>">
-              <input class="registration__input form__input" id="registration-password" type="password" name="password" placeholder="Придумайте пароль" value=<?= $fields_values['password'] ?>>
+            <div class="form__input-section <?php if (!empty($form_errors['password'])):?>form__input-section--error<?php endif; ?>">
+              <input class="registration__input form__input" id="registration-password" type="password" name="password" placeholder="Придумайте пароль" value=<?= $form_values['password'] ?>>
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Ошибка</h3>
-                <p class="form__error-desc"><?= $fields_errors['password'] ?></p>
+                <p class="form__error-desc"><?= $form_errors['password'] ?></p>
               </div>
             </div>
           </div>
           <div class="registration__input-wrapper form__input-wrapper">
             <label class="registration__label form__label" for="registration-password-repeat">Повтор пароля<span class="form__input-required">*</span></label>
-            <div class="form__input-section <?php if (!empty($fields_errors['password-repeat'])):?>form__input-section--error<?php endif; ?>">
-              <input class="registration__input form__input" id="registration-password-repeat" type="password" name="password-repeat" placeholder="Повторите пароль" value=<?= $fields_values['password-repeat'] ?>>
+            <div class="form__input-section <?php if (!empty($form_errors['password-repeat'])):?>form__input-section--error<?php endif; ?>">
+              <input class="registration__input form__input" id="registration-password-repeat" type="password" name="password-repeat" placeholder="Повторите пароль" value=<?= $form_values['password-repeat'] ?>>
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Ошибка</h3>
-                <p class="form__error-desc"><?= $fields_errors['password-repeat'] ?></p>
+                <p class="form__error-desc"><?= $form_errors['password-repeat'] ?></p>
               </div>
             </div>
           </div>
         </div>
-        <?php if (!empty($fields_errors)):?>
+        <?php if (!empty($form_errors)):?>
         <div class="form__invalid-block">
           <b class="form__invalid-slogan">Пожалуйста, исправьте следующие ошибки:</b>
           <ul class="form__invalid-list">
-            <?php foreach($fields_errors as $field => $error): ?>
-                <li class="form__invalid-item"><?= $field_error_codes[$field] ?> . <?= $error ?></li>
+            <?php foreach($form_errors as $field => $error): ?>
+                <li class="form__invalid-item"><?= $form_error_codes[$field] ?> . <?= $error ?></li>
             <?php endforeach; ?>
           </ul>
         </div>

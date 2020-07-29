@@ -68,65 +68,77 @@ function display_404_page() {
     http_response_code(404);
 }
 
-function validateFilled($var) {
-    if (empty($_POST[$var])) {
+function getValidationRules(array $rules): array {
+    $result = [];
+    foreach ($rules as $fieldName => $rule) {
+        $result[$fieldName] = explode('|', $rule);
+    }
+    return $result;
+}
+
+function getValidationMethodName(string $name): string {
+    $studlyWords = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
+    return "validate{$studlyWords}";
+}
+
+function getValidationNameAndParameters(string $rule): array {
+    $nameParams = explode(':', $rule);
+    $parameters = [];
+    $name = $nameParams[0];
+    if (isset($nameParams[1])) {
+        $parameters = explode(',', $nameParams[1]);
+    }
+    return [$name, $parameters];
+}
+
+function validateFilled(array $inputArray, string $parameterName): ?string {
+    if (empty($inputArray[$parameterName])) {
         return 'Это поле должно быть заполнено';
     }
+    return null;
 }
 
-function validateURL($var) {
-    if (!filter_var($_POST[$var], FILTER_VALIDATE_URL)) {
+function validateCorrectURL(array $inputArray, string $parameterName): ?string {
+    if (!filter_var($inputArray[$parameterName], FILTER_VALIDATE_URL)) {
         return 'Некорретный URL-адрес';
     }
+    return null;
 }
 
-function validateRepeatPassword($repeatPassword) {
-    if ($_POST['password-repeat'] !== $_POST['password']) {
+function validateRepeatPassword(array $inputArray, string $parameterName): ?string {
+    if ($inputArray['password'] !== $inputArray['password-repeat']) {
         return 'Пароли не совпадают';
     }
+    return null;
 }
 
-function validateCorrectEmail($var) {
-    if (!filter_var($_POST[$var], FILTER_VALIDATE_EMAIL)) {
+function validateCorrectEmail(array $inputArray, string $parameterName): ?string {
+    if (!filter_var($inputArray[$parameterName], FILTER_VALIDATE_EMAIL)) {
         return 'Некорретный email';
     }
+    return null;
 }
 
-function validateEmailExist($email) {
-    $con = db_connect("localhost", "root", "", "readme");
-    $select_user_by_email_query = "SELECT * FROM users WHERE email = ?";
-    $result = secure_query($con, $select_user_by_email_query, 's', $_POST['email']);
-    if (mysqli_num_rows($result) > 0) {
-        return 'Пользователь с таким email уже существует';
-    }
+function validateExists(array $validationArray, string $parameterName, $tableName, $columnName, mysqli $dbConnection): ?string {
+    $sql = "select count(*) as amount from $tableName where $columnName = ?";
+    $prepared_sql = mysqli_prepare($dbConnection, $sql);
+    mysqli_stmt_bind_param($prepared_sql, 's', $validationArray[$parameterName]);
+    mysqli_stmt_execute($prepared_sql);
+    mysqli_stmt_bind_result($prepared_sql, $amount);
+    mysqli_stmt_fetch($prepared_sql);
+    mysqli_stmt_close($prepared_sql);
+    return $amount > 0 ? "Запись с таким $parameterName уже присутствует в базе данных" : null;
 }
 
-function validateImageURLContent($var) {
-    if (!$content = @file_get_contents($_POST[$var])) {
-        return 'По ссылке отсутствует изображение';
-    }
-}
-
-function validateImageFile($file) {
-    if ($file['error'] != 0) {
-        return 'Код ошибки:'.$file['error'];
+function validateImgLoaded(array $inputArray, string $parameterName): ?string {
+    if ($inputArray[$parameterName]['error'] != 0) {
+        return 'Код ошибки:'.$inputArray[$parameterName]['error'];
     } else {
         $file_info = finfo_open(FILEINFO_MIME_TYPE);
-        $file_name = $file['tmp_name'];
+        $file_name = $inputArray[$parameterName]['tmp_name'];
         $file_type = finfo_file($file_info, $file_name);
         if (!in_array($file_type, ['image/png','image/jpeg', 'image/gif'])) {
             return 'Недопустимый тип изображения';
-        }
-    }
-}
-
-function validate($field, $validation_rules) {
-    foreach ($validation_rules as $validation_rule) {
-        if (!function_exists($validation_rule)) {
-            return 'Функции валидацxии ' . $validation_rule. ' не существует';
-        }
-        if ($result = $validation_rule($field))  {
-            return $result;
         }
     }
 }
@@ -136,9 +148,65 @@ function save_image($img) {
         return $file_name = $_POST[$img];
     } else {
         $file_name = $_FILES[$img]['name'];
-        $file_path = __DIR__ . '/uploads/' . '<br>';
+        $file_path = __DIR__ . '/uploads/';
         $file_url = '/uploads/' . $file_name;
         move_uploaded_file($_FILES[$img]['tmp_name'], $file_path . $file_name);
         return $file_name;
     }
+}
+
+
+function validateImageURLContent(array $inputArray, string $parameterName): ?string {
+    if (!file_get_contents($inputArray[$parameterName])) {
+        return 'По ссылке отсутствует изображение';
+    }
+    return null;
+}
+
+/**
+ * Проверяет, что переданная ссылка ведет на публично доступное видео с youtube
+ * @param string $youtube_url Ссылка на youtube видео
+ * @return bool
+ */
+function validateYoutubeURL(array $inputArray, string $parameterName): ?string {
+    $res = false;
+    $id = extract_youtube_id($inputArray[$parameterName]);
+
+    if ($id) {
+        $api_data = ['id' => $id, 'part' => 'id,status', 'key' => 'AIzaSyD24lsJ4BL-azG188tHxXtbset3ehKXeJg'];
+        $url = "https://www.googleapis.com/youtube/v3/videos?" . http_build_query($api_data);
+
+        $resp = file_get_contents($url);
+
+        if ($resp && $json = json_decode($resp, true)) {
+            $res = null;
+            // $res = $json['pageInfo']['totalResults'] > 0 && $json['items'][0]['status']['privacyStatus'] == 'public';
+        } else {
+            $res = 'Видео по ссылке не найдено';
+        }
+    }
+
+    return $res;
+}
+
+function validate($fields, $validationArray, $db_connection) {
+    $validations = getValidationRules($validationArray);
+    $errors = [];
+    foreach ($validations as $field => $rules) {
+        foreach ($rules as $rule) {
+            [$name, $parameters] = getValidationNameAndParameters($rule);
+            $methodName = getValidationMethodName($name);
+            $methodParameters = array_merge([$fields, $field], $parameters);
+            if (!function_exists($methodName)) {
+                return 'Функции валидации ' . $methodName. ' не существует';
+            }
+            if ($methodName == 'validateExists') {
+                array_push($methodParameters, $db_connection);
+            }
+            if ($errors[$field] = call_user_func_array($methodName, $methodParameters)) {
+                break;
+            };
+        }
+    }
+    return $errors;
 }
