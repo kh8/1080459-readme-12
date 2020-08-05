@@ -130,6 +130,17 @@ function validateExists(array $validationArray, string $parameterName, $tableNam
     return $amount > 0 ? "Запись с таким $parameterName уже присутствует в базе данных" : null;
 }
 
+function validateCorrectPassword(array $validationArray, string $parameterName, $tableName, $usersColumnName, $passwordColumnName, mysqli $dbConnection): ?string {
+    $sql = "select password as dbpassword from $tableName where $usersColumnName = ?";
+    $prepared_sql = mysqli_prepare($dbConnection, $sql);
+    mysqli_stmt_bind_param($prepared_sql, 's', $validationArray['login']);
+    mysqli_stmt_execute($prepared_sql);
+    mysqli_stmt_bind_result($prepared_sql, $dbpassword);
+    mysqli_stmt_fetch($prepared_sql);
+    mysqli_stmt_close($prepared_sql);
+    return !password_verify($validationArray[$parameterName], $dbpassword) ? "Вы ввели неверный email/пароль" : null;
+}
+
 function validateImgLoaded(array $inputArray, string $parameterName): ?string {
     if ($inputArray[$parameterName]['error'] != 0) {
         return 'Код ошибки:'.$inputArray[$parameterName]['error'];
@@ -190,6 +201,7 @@ function validateYoutubeURL(array $inputArray, string $parameterName): ?string {
 }
 
 function validate($fields, $validationArray, $db_connection) {
+    $db_functions = ['validateExists', 'validateCorrectpassword'];
     $validations = getValidationRules($validationArray);
     $errors = [];
     foreach ($validations as $field => $rules) {
@@ -200,7 +212,7 @@ function validate($fields, $validationArray, $db_connection) {
             if (!function_exists($methodName)) {
                 return 'Функции валидации ' . $methodName. ' не существует';
             }
-            if ($methodName == 'validateExists') {
+            if (in_array($methodName, $db_functions)) {
                 array_push($methodParameters, $db_connection);
             }
             if ($errors[$field] = call_user_func_array($methodName, $methodParameters)) {
