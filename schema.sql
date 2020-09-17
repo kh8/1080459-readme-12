@@ -102,3 +102,5 @@ FOREIGN KEY (hashtag_id) REFERENCES hashtags(id)
 ON UPDATE CASCADE
 ON DELETE CASCADE
 );
+
+CREATE FULLTEXT INDEX readme_ft_search ON posts(title, content);

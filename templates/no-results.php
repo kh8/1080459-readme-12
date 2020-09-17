@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>readme: добавление публикации</title>
+    <title>readme: страница результатов поиска (нет результатов)</title>
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body class="page">
@@ -96,7 +96,7 @@
                 </div>
               </li>
               <li>
-                <a class="header__post-button header__post-button--active button button--transparent" href="#">Закрыть</a>
+                <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
               </li>
             </ul>
           </nav>
@@ -104,40 +104,29 @@
       </div>
     </header>
 
-    <main class="page__main page__main--adding-post">
-      <div class="page__main-section">
-        <div class="container">
-          <h1 class="page__title page__title--adding-post">Добавить публикацию</h1>
+    <main class="page__main page__main--search-results">
+      <h1 class="visually-hidden">Страница результатов поиска (нет результатов)</h1>
+      <section class="search">
+        <h2 class="visually-hidden">Результаты поиска</h2>
+        <div class="search__query-wrapper">
+          <div class="search__query container">
+            <span>Вы искали:</span>
+            <span class="search__query-text"><?= $keywords ?? '' ?></span>
+          </div>
         </div>
-        <div class="adding-post container">
-          <div class="adding-post__tabs-wrapper tabs">
-            <div class="adding-post__tabs filters">
-              <ul class="adding-post__tabs-list filters__list tabs__list">
-                <?php foreach($content_types as $index => $content_type): ?>
-                  <li class="adding-post__tabs-item filters__item">
-                    <a class="adding-post__tabs-link filters__button filters__button--<?=$content_type['type_class'];?> tabs__item button <?php if ($form_type == $content_type['type_class']):?>tabs__item--active filters__button--active<?php endif; ?>">
-                        <svg class="filters__icon" width="22" height="18">
-                        <use xlink:href="#icon-filter-<?=$content_type['type_class'];?>"></use>
-                        </svg>
-                        <span><?=$content_type['type_name'];?></span>
-                    </a>
-                    </li>
-                <?php endforeach ?>
-              </ul>
-            </div>
-            <div class="adding-post__tab-content">
-            <?php foreach($content_types as $content_type) {
-                if ($form_type == $content_type['type_class']) {
-                    $form = include_template($content_type['type_class'].'-form.php', ['form_values' => $form_values, 'form_errors' => $form_errors, 'field_error_codes' => $field_error_codes, 'form_type' => $form_type]);
-                } else {
-                    $form = include_template($content_type['type_class'].'-form.php', ['form_values' => [], 'form_errors' => [], 'field_error_codes' => $field_error_codes, 'form_type' => $form_type]);
-                }
-                print($form);
-            } ?>
+        <div class="search__results-wrapper">
+          <div class="search__no-results container">
+            <p class="search__no-results-info">К сожалению, ничего не найдено.</p>
+            <p class="search__no-results-desc">
+              Попробуйте изменить поисковый запрос или просто зайти в раздел &laquo;Популярное&raquo;, там живет самый крутой контент.
+            </p>
+            <div class="search__links">
+              <a class="search__popular-link button button--main" href="#">Популярное</a>
+              <a class="search__back-link" href="#">Вернуться назад</a>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
     <footer class="footer">
@@ -195,28 +184,6 @@
       </div>
     </footer>
 
-    <div class="modal modal--adding">
-      <div class="modal__wrapper">
-        <button class="modal__close-button button" type="button">
-          <svg class="modal__close-icon" width="18" height="18">
-            <use xlink:href="#icon-close"></use>
-          </svg>
-          <span class="visually-hidden">Закрыть модальное окно</span></button>
-        <div class="modal__content">
-          <h1 class="modal__title">Пост добавлен</h1>
-          <p class="modal__desc">
-            Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы. Байкал считается самым глубоким озером в мире. Он окружен сефтью пешеходных маршрутов, называемых Большой байкальской тропой. Деревня Листвянка, расположенная на западном берегу озера, – популярная отправная точка для летних экскурсий.
-          </p>
-          <div class="modal__buttons">
-            <a class="modal__button button button--main" href="#">Синяя кнопка</a>
-            <a class="modal__button button button--gray" href="#">Серая кнопка</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="libs/dropzone.js"></script>
-    <script src="js/dropzone-settings.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>
