@@ -15,7 +15,7 @@
     <header class="header">
       <div class="header__wrapper container">
         <div class="header__logo-wrapper">
-          <a class="header__logo-link" href="main.html">
+          <a class="header__logo-link" href="index.php">
             <img class="header__logo" src="img/logo.svg" alt="Логотип readme" width="128" height="24">
           </a>
           <p class="header__topic">
@@ -38,17 +38,17 @@
           <nav class="header__nav">
             <ul class="header__my-nav">
               <li class="header__my-page header__my-page--popular">
-                <a class="header__page-link" href="popular.html" title="Популярный контент">
+                <a class="header__page-link" href="popular.php" title="Популярный контент">
                   <span class="visually-hidden">Популярный контент</span>
                 </a>
               </li>
               <li class="header__my-page header__my-page--feed">
-                <a class="header__page-link" href="feed.html" title="Моя лента">
+                <a class="header__page-link" href="feed.php" title="Моя лента">
                   <span class="visually-hidden">Моя лента</span>
                 </a>
               </li>
               <li class="header__my-page header__my-page--messages">
-                <a class="header__page-link" href="messages.html" title="Личные сообщения">
+                <a class="header__page-link" href="messages.php" title="Личные сообщения">
                   <span class="visually-hidden">Личные сообщения</span>
                 </a>
               </li>
@@ -164,7 +164,7 @@
                         <?php break; case 'video': ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <img src="<?= $posts['youtube_url'] ?? '' ?>" alt="Превью к видео" width="760" height="396">
+                                    <img src="<?= $post['youtube_url'] ?? '' ?>" alt="Превью к видео" width="760" height="396">
                                 </div>
                                 <div class="post-video__control">
                                     <button class="post-video__play post-video__play--paused button button--video" type="button"><span class="visually-hidden">Запустить видео</span></button>
@@ -247,13 +247,13 @@
           <div class="footer__my-info">
             <ul class="footer__my-pages">
               <li class="footer__my-page footer__my-page--feed">
-                <a class="footer__page-link" href="feed.html">Моя лента</a>
+                <a class="footer__page-link" href="feed.php">Моя лента</a>
               </li>
               <li class="footer__my-page footer__my-page--popular">
-                <a class="footer__page-link" href="popular.html">Популярный контент</a>
+                <a class="footer__page-link" href="popular.php">Популярный контент</a>
               </li>
               <li class="footer__my-page footer__my-page--messages">
-                <a class="footer__page-link" href="messages.html">Личные сообщения</a>
+                <a class="footer__page-link" href="messages.php">Личные сообщения</a>
               </li>
             </ul>
             <div class="footer__copyright">

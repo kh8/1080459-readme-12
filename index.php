@@ -4,6 +4,7 @@ require_once('functions.php');
 require_once('db.php');
 session_start();
 
+$select_user_query = "SELECT users.id, users.username, users.avatar FROM users WHERE users.username = ?";
 $form_error_codes = [
     'login' => 'Логин',
     'password' => 'Пароль',
@@ -22,8 +23,12 @@ if (count($_POST) > 0) {
     $form['errors'] = validate($form['values'], $validation_rules, $con);
     $form['errors'] = array_filter($form['errors']);
     if (empty($form['errors'])) {
-        $_SESSION['username'] = $form['values']['login'];
+        $user_mysqli = secure_query($con, $select_user_query, 's', $form['values']['login']);
+        $user = mysqli_fetch_assoc($user_mysqli);
         $_SESSION['is_auth'] = 1;
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['avatar'] = $user['avatar'];
+        $_SESSION['id'] = $user['id'];
         header("Location: feed.php");
         exit();
     }

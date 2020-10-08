@@ -15,7 +15,7 @@
     <header class="header">
       <div class="header__wrapper container">
         <div class="header__logo-wrapper">
-          <a class="header__logo-link" href="main.html">
+          <a class="header__logo-link" href="index.php">
             <img class="header__logo" src="img/logo.svg" alt="Логотип readme" width="128" height="24">
           </a>
           <p class="header__topic">
@@ -38,17 +38,17 @@
           <nav class="header__nav">
             <ul class="header__my-nav">
               <li class="header__my-page header__my-page--popular">
-                <a class="header__page-link" href="popular.html" title="Популярный контент">
+                <a class="header__page-link" href="popular.php" title="Популярный контент">
                   <span class="visually-hidden">Популярный контент</span>
                 </a>
               </li>
               <li class="header__my-page header__my-page--feed">
-                <a class="header__page-link" href="feed.html" title="Моя лента">
+                <a class="header__page-link" href="feed.php" title="Моя лента">
                   <span class="visually-hidden">Моя лента</span>
                 </a>
               </li>
               <li class="header__my-page header__my-page--messages">
-                <a class="header__page-link" href="messages.html" title="Личные сообщения">
+                <a class="header__page-link" href="messages.php" title="Личные сообщения">
                   <span class="visually-hidden">Личные сообщения</span>
                 </a>
               </li>
@@ -60,7 +60,7 @@
                     <img class="header__profile-avatar" src="img/userpic-medium.jpg" alt="Аватар профиля">
                   </div>
                   <div class="header__profile-name">
-                    <span>Антон Глуханько</span>
+                    <span><?= $user['name'] ?? '' ?></span>
                     <svg class="header__link-arrow" width="10" height="6">
                       <use xlink:href="#icon-arrow-right-ad"></use>
                     </svg>
@@ -70,14 +70,14 @@
                   <div class="header__profile-tooltip">
                     <ul class="header__profile-nav">
                       <li class="header__profile-nav-item">
-                        <a class="header__profile-nav-link" href="#">
+                        <a class="header__profile-nav-link" href="profile.php">
                           <span class="header__profile-nav-text">
                             Мой профиль
                           </span>
                         </a>
                       </li>
                       <li class="header__profile-nav-item">
-                        <a class="header__profile-nav-link" href="#">
+                        <a class="header__profile-nav-link" href="messages.php">
                           <span class="header__profile-nav-text">
                             Сообщения
                             <i class="header__profile-indicator">2</i>
@@ -85,7 +85,7 @@
                         </a>
                       </li>
                       <li class="header__profile-nav-item">
-                        <a class="header__profile-nav-link" href="#">
+                        <a class="header__profile-nav-link" href="logout.php">
                           <span class="header__profile-nav-text">
                             Выход
                           </span>
@@ -173,13 +173,13 @@
           <div class="footer__my-info">
             <ul class="footer__my-pages">
               <li class="footer__my-page footer__my-page--feed">
-                <a class="footer__page-link" href="feed.html">Моя лента</a>
+                <a class="footer__page-link" href="feed.php">Моя лента</a>
               </li>
               <li class="footer__my-page footer__my-page--popular">
-                <a class="footer__page-link" href="popular.html">Популярный контент</a>
+                <a class="footer__page-link" href="popular.php">Популярный контент</a>
               </li>
               <li class="footer__my-page footer__my-page--messages">
-                <a class="footer__page-link" href="messages.html">Личные сообщения</a>
+                <a class="footer__page-link" href="messages.php">Личные сообщения</a>
               </li>
             </ul>
             <div class="footer__copyright">

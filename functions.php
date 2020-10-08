@@ -31,11 +31,15 @@ function get_post_time($post_id): DateTime
     return date_create($random_date);
 }
 
-function absolute_time_to_relative($absolute_time): string
+function absolute_time_to_relative($time): string
 {
+    if (!$time) {
+        return '';
+    }
     date_default_timezone_set('Asia/Yekaterinburg');
+    $date = date_create_from_format('Y-m-d H:i:s', $time);
     $current_date = date_create();
-    $interval = date_diff($absolute_time, $current_date);
+    $interval = date_diff($date, $current_date);
     $interval_in_minutes = $interval->days * 24 * 60;
     $interval_in_minutes += $interval->h * 60;
     $interval_in_minutes += $interval->i;
@@ -130,6 +134,17 @@ function validateExists(array $validationArray, string $parameterName, $tableNam
     return $amount > 0 ? "Запись с таким $parameterName уже присутствует в базе данных" : null;
 }
 
+function validateNotexists(array $validationArray, string $parameterName, $tableName, $columnName, mysqli $dbConnection): ?string {
+    $sql = "select count(*) as amount from $tableName where $columnName = ?";
+    $prepared_sql = mysqli_prepare($dbConnection, $sql);
+    mysqli_stmt_bind_param($prepared_sql, 's', $validationArray[$parameterName]);
+    mysqli_stmt_execute($prepared_sql);
+    mysqli_stmt_bind_result($prepared_sql, $amount);
+    mysqli_stmt_fetch($prepared_sql);
+    mysqli_stmt_close($prepared_sql);
+    return $amount == 0 ? "Записи с таким $parameterName нет в базе данных" : null;
+}
+
 function validateCorrectPassword(array $validationArray, string $parameterName, $tableName, $usersColumnName, $passwordColumnName, mysqli $dbConnection): ?string {
     $sql = "select password as dbpassword from $tableName where $usersColumnName = ?";
     $prepared_sql = mysqli_prepare($dbConnection, $sql);
@@ -201,7 +216,7 @@ function validateYoutubeURL(array $inputArray, string $parameterName): ?string {
 }
 
 function validate($fields, $validationArray, $db_connection) {
-    $db_functions = ['validateExists', 'validateCorrectpassword'];
+    $db_functions = ['validateExists', 'validateNotexists', 'validateCorrectpassword'];
     $validations = getValidationRules($validationArray);
     $errors = [];
     foreach ($validations as $field => $rules) {

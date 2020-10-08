@@ -5,15 +5,15 @@ INSERT into content_types SET type_name = 'Фото', type_class = 'photo';
 INSERT into content_types SET type_name = 'Ссылка', type_class = 'link';
 INSERT into content_types SET type_name = 'Видео', type_class = 'video';
 /* придумайте пару пользователей */
-INSERT into users SET username = 'Лариса', email = 'larisa@mail.ru', avatar = 'userpic-larisa-small.jpg';
-INSERT into users SET username = 'Владик', email = 'vladik@mail.ru', avatar = 'userpic.jpg';
-INSERT into users SET username = 'Виктор', email = 'viktor@mail.ru', avatar = 'userpic-mark.jpg';
+INSERT into users SET username = 'Лариса', email = 'larisa@mail.ru', avatar = 'userpic-larisa-small.jpg', dt_add = '2001-10-04 08:06:57';
+INSERT into users SET username = 'Владик', email = 'vladik@mail.ru', avatar = 'userpic.jpg', dt_add = '2002-10-04 08:06:57';
+INSERT into users SET username = 'Виктор', email = 'viktor@mail.ru', avatar = 'userpic-mark.jpg', dt_add = '2003-10-04 08:06:57';
 /* существующий список постов */
-INSERT into posts SET title = 'Цитата', post_type = 1, content = 'Мы в жизни любим только раз, а после ищем лишь похожих', author_id = 1, view_count = 30, quote_author = 'Неизвестный автор';
-INSERT into posts SET title = 'Моя мечта', post_type = 3, content = 'coast-medium.jpg', author_id = 1, view_count = 20, img_url = 'coast.jpg';
-INSERT into posts SET title = 'Игра престолов', post_type = 2, content = 'Не могу дождаться начала финального сезона своего любимого сериала!', author_id = 2, view_count = 10;
-INSERT into posts SET title = 'Наконец, обработал фотки!', post_type = 3, content = 'rock-medium.jpg', author_id = 3, view_count = 999, img_url = 'rock.jpg';
-INSERT into posts SET title = 'Лучшие курсы', post_type = 4, content = 'www.htmlacademy.ru', author_id = 2, view_count = 500;
+INSERT into posts SET title = 'Цитата', post_type = 1, content = 'Мы в жизни любим только раз, а после ищем лишь похожих', author_id = 1, view_count = 30, quote_author = 'Неизвестный автор', dt_add = '2010-03-24 10:05:13';
+INSERT into posts SET title = 'Моя мечта', post_type = 3, content = 'coast-medium.jpg', author_id = 1, view_count = 20, img_url = 'coast.jpg', dt_add = '2015-07-04 17:02:11';
+INSERT into posts SET title = 'Игра престолов', post_type = 2, content = 'Не могу дождаться начала финального сезона своего любимого сериала!', author_id = 2, view_count = 10, dt_add = '2020-09-01 00:00:00';
+INSERT into posts SET title = 'Наконец, обработал фотки!', post_type = 3, content = 'rock-medium.jpg', author_id = 3, view_count = 999, img_url = 'rock.jpg', dt_add = '2019-03-24 23:05:17';
+INSERT into posts SET title = 'Лучшие курсы', post_type = 4, content = 'www.htmlacademy.ru', author_id = 2, view_count = 500, dt_add = '2020-07-24 05:08:13';
 /* придумайте пару комментариев к разным постам */
 INSERT into comments SET user_id = 2, post_id = 4, content = 'Отличные фото!';
 INSERT into comments SET user_id = 1, post_id = 5, content = 'Сейчас там учусь';
