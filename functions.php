@@ -31,7 +31,7 @@ function get_post_time($post_id): DateTime
     return date_create($random_date);
 }
 
-function absolute_time_to_relative($time): string
+function absolute_time_to_relative($time, $last_word): string
 {
     if (!$time) {
         return '';
@@ -44,16 +44,18 @@ function absolute_time_to_relative($time): string
     $interval_in_minutes += $interval->h * 60;
     $interval_in_minutes += $interval->i;
     if ($interval_in_minutes < 60) {
-        $relative_time = $interval->i.' '.get_noun_plural_form($interval->i,'минута','минуты','минут').' назад';
+        $relative_time = $interval->i.' '.get_noun_plural_form($interval->i,'минута','минуты','минут').' '.$last_word;
     } elseif ($interval_in_minutes < 1440) {
-        $relative_time = $interval->h.' '.get_noun_plural_form($interval->h,'час','часа','часов').' назад';
+        $relative_time = $interval->h.' '.get_noun_plural_form($interval->h,'час','часа','часов').' '.$last_word;
     } elseif ($interval_in_minutes < 10080) {
-        $relative_time = $interval->d.' '.get_noun_plural_form($interval->d,'день','дня','дней').' назад';
+        $relative_time = $interval->d.' '.get_noun_plural_form($interval->d,'день','дня','дней').' '.$last_word;
     } elseif ($interval_in_minutes < 50400) {
         $weeks = floor($interval->d/7);
-        $relative_time = $weeks.' '.get_noun_plural_form($weeks,'неделя','недели','недель').' назад';
+        $relative_time = $weeks.' '.get_noun_plural_form($weeks,'неделя','недели','недель').' '.$last_word;
+    } elseif ($interval_in_minutes < 525600) {
+        $relative_time = $interval->m.' '.get_noun_plural_form($interval->m,'месяц','месяца','месяцев').' '.$last_word;
     } else {
-        $relative_time = $interval->m.' '.get_noun_plural_form($interval->m,'месяц','месяца','месяцев').' назад';
+        $relative_time = $interval->y.' '.get_noun_plural_form($interval->y,'год','года','лет').' '.$last_word;
     }
     return $relative_time;
 }
@@ -63,6 +65,18 @@ function secure_query(mysqli $con, string $sql, string $type, ...$params) {
     mysqli_stmt_bind_param($prepared_sql, $type, ...$params);
     mysqli_stmt_execute($prepared_sql);
     return mysqli_stmt_get_result($prepared_sql);
+}
+
+function white_list(&$value, $allowed, $message) {
+    if ($value === null) {
+        return $allowed[0];
+    }
+    $key = array_search($value, $allowed, true);
+    if ($key === false) {
+        return false;
+    } else {
+        return $value;
+    }
 }
 
 function display_404_page() {
@@ -98,6 +112,13 @@ function getValidationNameAndParameters(string $rule): array {
 function validateFilled(array $inputArray, string $parameterName): ?string {
     if (empty($inputArray[$parameterName])) {
         return 'Это поле должно быть заполнено';
+    }
+    return null;
+}
+
+function validateLong(array $inputArray, string $parameterName, int $length): ?string {
+    if (strlen(trim($inputArray[$parameterName])) < $length) {
+        return 'Текст должен быть не короче '.$length.' символов';
     }
     return null;
 }

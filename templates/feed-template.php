@@ -17,7 +17,7 @@
                                 <div class="post__info">
                                     <b class="post__author-name"><?=$post['username'];?></b>
                                     <span class="post__time">
-                                        <?= absolute_time_to_relative($post['dt_add']); ?>
+                                        <?= absolute_time_to_relative($post['dt_add'], 'назад'); ?>
                                     </span>
                                 </div>
                             </a>
@@ -84,7 +84,7 @@
                                 <span><?= $post['likes'] ?? '' ?></span>
                                 <span class="visually-hidden">количество лайков</span>
                             </a>
-                            <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
+                            <a class="post__indicator post__indicator--comments button" href="post.php?id=<?= $post['id'] ?>" title="Комментарии">
                                 <svg class="post__indicator-icon" width="19" height="17">
                                 <use xlink:href="#icon-comment"></use>
                                 </svg>
@@ -106,12 +106,12 @@
             </div>
             <ul class="feed__filters filters">
                 <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--active" href="#">
+                    <a class="filters__button filters__button--active" href="feed.php">
                     <span>Все</span>
                     </a>
                 </li>
                 <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--photo button" href="#">
+                    <a class="filters__button filters__button--photo button" href="feed.php?filter=photo">
                     <span class="visually-hidden">Фото</span>
                     <svg class="filters__icon" width="22" height="18">
                         <use xlink:href="#icon-filter-photo"></use>
@@ -119,7 +119,7 @@
                     </a>
                 </li>
                 <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--video button" href="#">
+                    <a class="filters__button filters__button--video button" href="feed.php?filter=video">
                     <span class="visually-hidden">Видео</span>
                     <svg class="filters__icon" width="24" height="16">
                         <use xlink:href="#icon-filter-video"></use>
@@ -127,7 +127,7 @@
                     </a>
                 </li>
                 <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--text button" href="#">
+                    <a class="filters__button filters__button--text button" href="feed.php?filter=text">
                     <span class="visually-hidden">Текст</span>
                     <svg class="filters__icon" width="20" height="21">
                         <use xlink:href="#icon-filter-text"></use>
@@ -135,7 +135,7 @@
                     </a>
                 </li>
                 <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--quote button" href="#">
+                    <a class="filters__button filters__button--quote button" href="feed.php?filter=quote">
                     <span class="visually-hidden">Цитата</span>
                     <svg class="filters__icon" width="21" height="20">
                         <use xlink:href="#icon-filter-quote"></use>
@@ -143,7 +143,7 @@
                     </a>
                 </li>
                 <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--link button" href="#">
+                    <a class="filters__button filters__button--link button" href="feed.php?filter=link">
                     <span class="visually-hidden">Ссылка</span>
                     <svg class="filters__icon" width="21" height="18">
                         <use xlink:href="#icon-filter-link"></use>

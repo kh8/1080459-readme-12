@@ -8,7 +8,7 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="#">
+                        <a class="sorting__link sorting__link--active" href="popular.php?sort=view_count<?= $filter ? '&filter='.$filter : '' ?>">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -16,7 +16,7 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a class="sorting__link" href="popular.php?sort=likes<?= $filter ? '&filter='.$filter : '' ?>">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -24,7 +24,7 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a class="sorting__link" href="popular.php?sort=dt_add<?= $filter ? '&filter='.$filter : '' ?>">
                             <span>Дата</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -37,13 +37,13 @@
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all <?php if ($post_type == ''):?>filters__button--active <?php endif; ?>" href="#">
+                        <a class="filters__button filters__button--ellipse filters__button--all <?= ($filter == '') ? 'filters__button--active' : '' ?>" href="#">
                             <span>Все</span>
                         </a>
                     </li>
                     <?php foreach($content_types as $index => $content_type): ?>
                         <li class="popular__filters-item filters__item">
-                            <a class="button filters__button filters__button--<?=$content_type['type_class'];?> <?php if ($post_type == $content_type['id']):?>filters__button--active <?php endif; ?>" href="index.php?post_type=<?=$content_type['id'];?>">
+                            <a class="button filters__button filters__button--<?=$content_type['type_class'];?> <?= ($filter == $content_type['type_class']) ? 'filters__button--active' : ''?>" href="popular.php?filter=<?=$content_type['type_class'];?>">
                                 <span class="visually-hidden"><?=$content_type['type_name'];?></span>
                                 <svg class="filters__icon" width="22" height="21">
                                     <use xlink:href="#icon-filter-<?=$content_type['type_class'];?>"></use>
@@ -114,8 +114,7 @@
                                 </div>
                                 <div class="post__info">
                                     <b class="post__author-name"><?=$post['username'];?></b>
-                                    <?php $post_time = get_post_time($index) ?>
-                                    <time class="post__time" datetime="<?= $post['dt_add'] ?? '' ?>" title="<?= date_create_from_format('Y-m-d H:i:s', $post['dt_add'])->format('d.m.Y H:i'); ?>"><?= absolute_time_to_relative($post['dt_add']); ?></time>
+                                    <time class="post__time" datetime="<?= $post['dt_add'] ?? '' ?>" title="<?= date_create_from_format('Y-m-d H:i:s', $post['dt_add'])->format('d.m.Y H:i'); ?>"><?= absolute_time_to_relative($post['dt_add'], 'назад'); ?></time>
                                 </div>
                             </a>
                         </div>
@@ -131,7 +130,7 @@
                                     <span><?= $post['likes'] ?? '' ?></span>
                                     <span class="visually-hidden">количество лайков</span>
                                 </a>
-                                <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
+                                <a class="post__indicator post__indicator--comments button" href="post.php?id=<?= $post['id'] ?>" title="Комментарии">
                                     <svg class="post__indicator-icon" width="19" height="17">
                                         <use xlink:href="#icon-comment"></use>
                                     </svg>
@@ -144,5 +143,19 @@
                 </article>
             <?php endforeach; ?>
         </div>
+        <?php if ($posts_count > $page_limit):?>
+            <div class="popular__page-links">
+                <?php if ($page_number > 1):?>
+                    <a class="popular__page-link popular__page-link--prev button button--gray" href="popular.php?page=<?= $page_number - 1?><?= $filter ? '&filter='.$filter : ''?><?= $sort ? '&sort='.$sort : ''?>">
+                        Предыдущая страница
+                    </a>
+                <?php endif; ?>
+                <?php if ($page_number < $posts_count / $page_limit):?>
+                    <a class="popular__page-link popular__page-link--next button button--gray" href="popular.php?page=<?= $page_number + 1?><?= $filter ? '&filter='.$filter : ''?><?= $sort ? '&sort='.$sort : ''?>">
+                        Следующая страница
+                    </a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </main>

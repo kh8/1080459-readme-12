@@ -57,7 +57,7 @@
               <li class="header__profile">
                 <a class="header__profile-link" href="#">
                   <div class="header__avatar-wrapper">
-                    <img class="header__profile-avatar" src="img/userpic-medium.jpg" alt="Аватар профиля">
+                    <img class="header__profile-avatar" src="img/<?=$user['avatar'];?>" alt="Аватар профиля">
                   </div>
                   <div class="header__profile-name">
                     <span><?= $user['name'] ?? '' ?></span>
@@ -115,7 +115,7 @@
               <ul class="adding-post__tabs-list filters__list tabs__list">
                 <?php foreach($content_types as $index => $content_type): ?>
                   <li class="adding-post__tabs-item filters__item">
-                    <a class="adding-post__tabs-link filters__button filters__button--<?=$content_type['type_class'];?> tabs__item button <?php if ($form_type == $content_type['type_class']):?>tabs__item--active filters__button--active<?php endif; ?>">
+                    <a class="adding-post__tabs-link filters__button filters__button--<?=$content_type['type_class'];?> tabs__item button <?= ($form_type == $content_type['type_class']) ? 'tabs__item--active filters__button--active' : '' ?>" href="add.php?tab=<?= $content_type['type_class']?>">
                         <svg class="filters__icon" width="22" height="18">
                         <use xlink:href="#icon-filter-<?=$content_type['type_class'];?>"></use>
                         </svg>

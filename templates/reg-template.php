@@ -65,7 +65,7 @@
         <div class="form__text-inputs">
           <div class="registration__input-wrapper form__input-wrapper">
             <label class="registration__label form__label" for="registration-email">Электронная почта <span class="form__input-required">*</span></label>
-            <div class="form__input-section <?php if (!empty($form_errors['email'])):?>form__input-section--error<?php endif; ?>">
+            <div class="form__input-section <?= (!empty($form_errors['email'])) ? 'form__input-section--error' : '' ?>">
               <input class="registration__input form__input" id="registration-email" type="email" name="email" placeholder="Укажите эл.почту" value=<?= $form_values['email'] ?>>
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">

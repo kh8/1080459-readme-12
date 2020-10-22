@@ -9,8 +9,6 @@ $form_error_codes = [
     'login' => 'Логин',
     'password' => 'Пароль',
 ];
-
-
 $validation_rules = [
     'login' => 'filled',
     'password' => 'filled|correctpassword:users,username,password'

@@ -1,6 +1,7 @@
 <?php
 
 $select_content_types_query = 'SELECT * FROM content_types';
+$select_subscribe_query = "SELECT * FROM subscribe WHERE follower_id = ? AND author_id = ?";
 $add_quote_post_query = "INSERT into posts SET title = ?, post_type = ?, content = ?, author_id = ?, view_count = 0, quote_author = ?, dt_add = ?";
 $add_text_post_query = "INSERT into posts SET title = ?, post_type = ?, content = ?, author_id = ?, view_count = 0, dt_add = ?";
 $add_link_post_query = "INSERT into posts SET title = ?, post_type = ?, content = ?, author_id = ?, view_count = 0, dt_add = ?";
