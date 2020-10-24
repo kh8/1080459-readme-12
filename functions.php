@@ -210,6 +210,21 @@ function validateImageURLContent(array $inputArray, string $parameterName): ?str
     return null;
 }
 
+function validateRequiredIfNot(array $inputArray, string $parameterName, ... $fields): ?string
+{
+    $should_be_present = true;
+    foreach ($fields as $field) {
+        if (isset($inputArray[$field])) {
+            $should_be_present = false;
+        }
+    }
+
+    if ($should_be_present) {
+        return 'Параметр должен присутствовать, так как отсутствуют ' . implode(', ', $fields);
+    }
+    return null;
+}
+
 /**
  * Проверяет, что переданная ссылка ведет на публично доступное видео с youtube
  * @param string $youtube_url Ссылка на youtube видео
@@ -251,6 +266,8 @@ function validate($fields, $validationArray, $db_connection) {
             if (in_array($methodName, $db_functions)) {
                 array_push($methodParameters, $db_connection);
             }
+
+
             if ($errors[$field] = call_user_func_array($methodName, $methodParameters)) {
                 break;
             };
