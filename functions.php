@@ -219,7 +219,7 @@ function validateRequiredIfNot(array $inputArray, string $parameterName, ... $fi
         }
     }
 
-    if ($should_be_present) {
+    if ($should_be_present && !isset($_POST[$parameterName])) {
         return 'Параметр должен присутствовать, так как отсутствуют ' . implode(', ', $fields);
     }
     return null;
