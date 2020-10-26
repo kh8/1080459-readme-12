@@ -67,7 +67,7 @@
                         <?php endif; ?>
                     <?php break; case 'photo': ?>
                         <div class="post-photo__image-wrapper">
-                            <img src="img/<?=$post['content'];?>" alt="Фото от пользователя" width="360" height="240">
+                            <img src="img/<?=$post['img_url'];?>" alt="Фото от пользователя" width="360" height="240">
                         </div>
                     <?php break; case 'link': ?>
                         <div class="post-link__wrapper">

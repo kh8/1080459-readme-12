@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/lib/base.php');
+require_once(__DIR__ . '/src/posts/add.php');
 /** @var $connection */
 
 $validation_rules = [
@@ -11,9 +12,9 @@ $validation_rules = [
     ],
     'photo' => [
         'heading' => 'filled',
-        'photo-url' => 'filled|correctURL|ImageURLContent|required_if_not:photo-file',
+        'photo-url' => 'filled|correctURL|ImageURLContent',
         'tags' => 'filled',
-        'photo-file' => 'imgloaded|required_if_not:photo-url'
+        'photo-file' => 'imgloaded'
     ],
     'link' => [
         'heading' => 'filled',
@@ -43,7 +44,7 @@ $field_error_codes = [
     'photo-file' => 'Файл фото',
     'quote-author' => 'Автор'
 ];
-
+$img_folder = __DIR__ . '\\img\\';
 $user = get_user();
 if ($user === null) {
     header("Location: index.php");
@@ -61,27 +62,30 @@ $form = [
 
 $form_type = $_GET['tab'] ?? 'text';
 
-if (count($_POST) === 1 && isset($_POST['form_type'])) {
-    $form['values'] = array_merge($form['values'], $_POST['form_type']);
-
+if (count($_POST) > 0 && isset($_POST['form-type'])) {
+    $form_type = $_POST['form-type'];
+    $form['values'] = $_POST;
     $form['values']['photo-file'] = $_FILES['photo-file'];
-    $form['errors'] = validate($form['values'], $validation_rules[$_POST['form_type']], $connection);
-
-    if (count ($form['errors']) < 1) {
+    $form['errors'] = validate($connection, $form['values'], $validation_rules[$_POST['form-type']]);
+    if (empty($form['errors']['photo-file'])) {
+        $form = ignoreField($form, 'photo-url');
+    } elseif (empty($form['errors']['photo-url'])) {
+        $form = ignoreField($form, 'photo-file');
+    }
+    $form['errors'] = array_filter($form['errors']);
+    if (empty($form['errors'])) {
         $file_url = null;
-        if ($form_type === 'photo') {
-            $file_url = upload_file($form);
+        if ($_POST['form-type'] === 'photo') {
+            $file_url = upload_file($form, $img_folder);
         }
 
-        $post_id = save_post($_POST['form_type'], $post_types, $_POST, $connection, $user, $file_url);
+        $post_id = save_post($connection, $form['values'], $post_types, $user, $file_url);
         add_tags($_POST['tags'], $post_id, $connection);
 
         $URL = '/post.php?id=' . $post_id;
         header("Location: $URL");
     }
 }
-
-
 
 $page_content = include_template(
     'add-template.php',

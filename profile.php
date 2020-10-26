@@ -1,8 +1,6 @@
 <?php
-require_once('helpers.php');
-require_once('functions.php');
-require_once('db.php');
-session_start();
+require_once(__DIR__ . '/lib/base.php');
+/** @var $connection */
 
 $select_user_query = "SELECT users.username, users.avatar, users.id, users.dt_add FROM users WHERE users.id = ?";
 $select_user_posts_query = "SELECT posts.*, users.id AS user_id, users.username, users.avatar, content_types.type_class,
@@ -33,31 +31,46 @@ LEFT JOIN (SELECT author_id, COUNT(*) AS post_count
 LEFT JOIN (SELECT author_id, follower_id AS user_subscribe FROM subscribe WHERE follower_id = ?) user_subscribed ON user_subscribed.author_id = users.id
 WHERE subscribe.follower_id = ?";
 
-if ($_SESSION['is_auth'] != 1) {
+$user = get_user();
+if ($user === null) {
     header("Location: index.php");
     exit();
 }
 $author_id = isset($_GET['id']) ? $_GET['id'] : $_SESSION['id'];
 $tab = isset($_GET['tab']) ? $_GET['tab'] : 'posts';
-$user['name'] = $_SESSION['username'];
-$user['id'] = $_SESSION['id'];
-$user['avatar'] = $_SESSION['avatar'];
-$con = db_connect("localhost", "root", "", "readme");
-$author_mysqli = secure_query($con, $select_user_query, 'i', $author_id);
+$author_mysqli = secure_query($connection, $select_user_query, $author_id);
 $author = mysqli_fetch_assoc($author_mysqli);
-$user_subscribe_mysqli = secure_query($con, $select_subscribe_query, 'ii', $user['id'], $author_id);
+$user_subscribe_mysqli = secure_query($connection, $select_subscribe_query, $user['id'], $author_id);
 $user['subscribe'] = $user_subscribe_mysqli->num_rows;
-$posts_mysqli = secure_query($con, $select_user_posts_query, 'i', $author_id);
+$posts_mysqli = secure_query($connection, $select_user_posts_query, $author_id);
 $posts = mysqli_fetch_all($posts_mysqli, MYSQLI_ASSOC);
-$posts_count_mysqli = secure_query($con, $count_user_posts_query, 'i', $author_id);
+$posts_count_mysqli = secure_query($connection, $count_user_posts_query, $author_id);
 $posts_count = mysqli_fetch_row($posts_count_mysqli)[0];
-$subscribers_count_mysqli = secure_query($con, $count_user_subscribers_query, 'i', $author_id);
+$subscribers_count_mysqli = secure_query($connection, $count_user_subscribers_query, $author_id);
 $subscribers_count = mysqli_fetch_row($subscribers_count_mysqli)[0];
-$likes_mysqli = secure_query($con, $select_author_likes, 'i', $author_id);
+$likes_mysqli = secure_query($connection, $select_author_likes, $author_id);
 $likes = mysqli_fetch_all($likes_mysqli, MYSQLI_ASSOC);
-$author_subscribes_mysqli = secure_query($con, $select_author_subscribes, 'ii', $user['id'], $author_id);
+$author_subscribes_mysqli = secure_query($connection, $select_author_subscribes, $user['id'], $author_id);
 $author_subscribes = mysqli_fetch_all($author_subscribes_mysqli, MYSQLI_ASSOC);
-$page_content = include_template('profile-template.php', ['user' => $user, 'author' => $author, 'tab' => $tab, 'posts' => $posts, 'likes' => $likes, 'posts_count' => $posts_count, 'subscribers_count' => $subscribers_count, 'subscribes' => $author_subscribes]);
-$layout_content = include_template('layout.php', ['content' => $page_content, 'user' => $user, 'title' => $title]);
+$page_content = include_template(
+    'profile-template.php',
+    [
+        'user' => $user,
+        'author' => $author,
+        'tab' => $tab,
+        'posts' => $posts,
+        'likes' => $likes,
+        'posts_count' => $posts_count,
+        'subscribers_count' => $subscribers_count,
+        'subscribes' => $author_subscribes
+    ]
+);
+$layout_content = include_template(
+    'layout.php',
+    [
+        'content' => $page_content,
+        'user' => $user,
+        'title' => $title
+    ]
+);
 print($layout_content);
-mysqli_close($con);

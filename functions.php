@@ -60,9 +60,12 @@ function absolute_time_to_relative($time, $last_word): string
     return $relative_time;
 }
 
-function secure_query(mysqli $con, string $sql, string $type, ...$params) {
+function secure_query(mysqli $con, string $sql, ...$params) {
+    foreach ($params as $param) {
+        $param_types .= (gettype($param) == 'integer') ? 'i' : 's';
+    }
     $prepared_sql = mysqli_prepare($con, $sql);
-    mysqli_stmt_bind_param($prepared_sql, $type, ...$params);
+    mysqli_stmt_bind_param($prepared_sql, $param_types, ...$params);
     mysqli_stmt_execute($prepared_sql);
     return mysqli_stmt_get_result($prepared_sql);
 }
@@ -251,7 +254,7 @@ function validateYoutubeURL(array $inputArray, string $parameterName): ?string {
     return $res;
 }
 
-function validate($fields, $validationArray, $db_connection) {
+function validate($db_connection, $fields, $validationArray) {
     $db_functions = ['validateExists', 'validateNotexists', 'validateCorrectpassword'];
     $validations = getValidationRules($validationArray);
     $errors = [];

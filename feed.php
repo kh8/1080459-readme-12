@@ -1,16 +1,11 @@
 <?php
-require_once('helpers.php');
-require_once('functions.php');
-require_once('db.php');
-
-session_start();
-if ($_SESSION['is_auth'] != 1) {
+require_once(__DIR__ . '/lib/base.php');
+/** @var $connection */
+$user = get_user();
+if ($user === null) {
     header("Location: index.php");
     exit();
 }
-$user['id'] = $_SESSION['id'];
-$user['name'] = $_SESSION['username'];
-$user['avatar'] = $_SESSION['avatar'];
 $user_id = $user['id'];
 $select_posts_query = "SELECT posts.*, content_types.type_class, users.id AS user_id, users.username, users.avatar,
 COALESCE(like_count, 0) AS likes,
@@ -31,10 +26,24 @@ if (isset($_GET['filter'])) {
     $select_posts_query.= "AND content_types.type_class = '$filter' ";
 }
 $select_posts_query.= 'ORDER BY dt_add DESC';
-$con = db_connect("localhost", "root", "", "readme");
-$posts_mysqli = mysqli_query($con, $select_posts_query);
+$posts_mysqli = mysqli_query($connection, $select_posts_query);
 $posts = mysqli_fetch_all($posts_mysqli, MYSQLI_ASSOC);
-$page_content = include_template('feed-template.php', ['posts' => $posts, 'content_types' => $content_types, 'user' => $user]);
-$layout_content = include_template('layout.php', ['content' => $page_content, 'user' => $user, 'title' => $title, 'header_link' => 'feed']);
+$page_content = include_template(
+    'feed-template.php',
+    [
+        'posts' => $posts,
+        'content_types' => $content_types,
+        'user' => $user
+    ]
+);
+$layout_content = include_template(
+    'layout.php',
+    [
+        'content' => $page_content,
+        'user' => $user,
+        'title' => $title,
+        'header_link' => 'feed'
+    ]
+);
 print($layout_content);
 

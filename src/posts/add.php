@@ -11,39 +11,47 @@ function get_content_types($connection)
     return $content_types;
 }
 
-function save_post(string $form_type, array $post_types, array $post, $connection, array $user, $file_url = null)
+function ignoreField (array $form, string $field_name)
+{
+    unset($form['errors'][$field_name]);
+    unset($form['values'][$field_name]);
+    return $form;
+}
+
+function save_post($connection, array $post, array $post_types, array $user, $file_url = null)
 {
     $post_id = null;
+    $post_type = $post['form-type'];
     $current_time = date('Y-m-d H:i:s');
-
     $fields = [
         'title',
+        'author_id',
         'post_type',
         'content',
         'view_count',
-        'dt_add',
+        'dt_add'
     ];
 
     $parameters = [
         $post['heading'],
-        $post_types[$form_type],
-        $post['content'],
         $user['id'],
+        $post_types[$post_type],
+        $post['content'],
         0,
         $current_time
     ];
 
-    if ($form_type === 'quote') {
+    if ($post_type === 'quote') {
         array_push($fields, 'quote_author');
         array_push($parameters, $post['quote-author']);
     }
 
-    if ($form_type === 'video') {
+    if ($post_type === 'video') {
         array_push($fields, 'youtube_url');
         array_push($parameters, $post['youtube_url']);
     }
 
-    if ($form_type === 'photo') {
+    if ($post_type === 'photo') {
         array_push($fields, 'img_url');
         array_push($parameters, $file_url);
     }
@@ -53,7 +61,6 @@ function save_post(string $form_type, array $post_types, array $post, $connectio
         $finalFields[] = "{$field} = ?";
     }
     $fields = implode(', ', $finalFields);
-
     $query = "insert into posts set {$fields}";
     secure_query($connection, $query, ...$parameters);
     $post_id = mysqli_insert_id($connection);
@@ -74,23 +81,25 @@ function add_tags(string $tags, $post_id, $connection)
             unset($new_tags[$new_tag]);
             $tag_id = $tags[$index]['id'];
         } else {
-            secure_query($connection, "INSERT into hashtags SET tag_name = ?", 's', $new_tag);
+            secure_query($connection, "INSERT into hashtags SET tag_name = ?", $new_tag);
             $tag_id = mysqli_insert_id($connection);
         }
-        secure_query($connection, "INSERT into post_tags SET post_id = ?, hashtag_id = ?", 'ii', $post_id, $tag_id);
+        secure_query($connection, "INSERT into post_tags SET post_id = ?, hashtag_id = ?", $post_id, $tag_id);
     }
 }
 
-function upload_file($form)
+function upload_file(array $form, string $img_folder)
 {
     if (isset($form['values']['photo-file'])) {
         $file_name = $form['values']['photo-file']['name'];
-        $file_path = __DIR__ . '/uploads/';
-        $file_url = '/uploads/' . $file_name;
-        move_uploaded_file($_FILES['photo-file']['tmp_name'], $file_path . $file_name);
+        $file_path = $img_folder . $file_name;
+        move_uploaded_file($_FILES['photo-file']['tmp_name'], $file_path);
     } else {
-        $file_url = $_POST['photo-url'];
+        $downloadedFileContents = file_get_contents($_POST['photo-url']);
+        $file_name = basename($_POST['photo-url']);
+        $file_path = $img_folder . $file_name;
+        $save = file_put_contents($file_path, $downloadedFileContents);
     }
 
-    return $file_url;
+    return $file_name;
 }
