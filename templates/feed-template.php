@@ -110,46 +110,16 @@
                     <span>Все</span>
                     </a>
                 </li>
-                <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--photo button" href="feed.php?filter=photo">
-                    <span class="visually-hidden">Фото</span>
-                    <svg class="filters__icon" width="22" height="18">
-                        <use xlink:href="#icon-filter-photo"></use>
-                    </svg>
-                    </a>
-                </li>
-                <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--video button" href="feed.php?filter=video">
-                    <span class="visually-hidden">Видео</span>
-                    <svg class="filters__icon" width="24" height="16">
-                        <use xlink:href="#icon-filter-video"></use>
-                    </svg>
-                    </a>
-                </li>
-                <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--text button" href="feed.php?filter=text">
-                    <span class="visually-hidden">Текст</span>
-                    <svg class="filters__icon" width="20" height="21">
-                        <use xlink:href="#icon-filter-text"></use>
-                    </svg>
-                    </a>
-                </li>
-                <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--quote button" href="feed.php?filter=quote">
-                    <span class="visually-hidden">Цитата</span>
-                    <svg class="filters__icon" width="21" height="20">
-                        <use xlink:href="#icon-filter-quote"></use>
-                    </svg>
-                    </a>
-                </li>
-                <li class="feed__filters-item filters__item">
-                    <a class="filters__button filters__button--link button" href="feed.php?filter=link">
-                    <span class="visually-hidden">Ссылка</span>
-                    <svg class="filters__icon" width="21" height="18">
-                        <use xlink:href="#icon-filter-link"></use>
-                    </svg>
-                    </a>
-                </li>
+                <?php foreach($content_types as $content_type): ?>
+                    <li class="feed__filters-item filters__item">
+                        <a class="button filters__button filters__button--<?=$content_type['type_class'];?> <?= ($filter == $content_type['type_class']) ? 'filters__button--active' : ''?>" href="feed.php?filter=<?=$content_type['type_class'];?>">
+                            <span class="visually-hidden"><?=$content_type['type_name'];?></span>
+                            <svg class="filters__icon" width="22" height="21">
+                                <use xlink:href="#icon-filter-<?=$content_type['type_class'];?>"></use>
+                            </svg>
+                        </a>
+                    </li>
+                <?php endforeach ?>
             </ul>
         </section>
         <aside class="promo">

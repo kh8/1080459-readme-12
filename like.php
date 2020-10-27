@@ -1,8 +1,11 @@
 <?php
 require_once(__DIR__ . '/lib/base.php');
 /** @var $connection */
-$select_post_query = "SELECT posts.id FROM posts WHERE posts.id = ?";
-$like_query = "INSERT INTO likes SET user_id = ?, post_id = ?";
+require_once(__DIR__ . '/src/posts/like.php');
+
+$validation_rules = [
+    'post-id' => 'notexists:posts,id',
+];
 
 $user = get_user();
 if ($user === null) {
@@ -14,8 +17,10 @@ if (!isset($_GET['id'])) {
     exit();
 }
 $post_id = $_GET['id'];
-$user_id = $_SESSION['id'];
-$post_mysqli = secure_query($connection, $select_post_query, $post_id);
-$post = mysqli_fetch_assoc($post_mysqli);
-secure_query($connection, $like_query, $user_id, $post['id']);
+$like_error = validate($connection, ['post-id' => $post_id], $validation_rules);
+$like_error = array_filter($like_error);
+if (empty($like_error)) {
+    like_post($connection, $user['id'], $post_id);
+}
+
 header('Location: ' . $_SERVER['HTTP_REFERER']);

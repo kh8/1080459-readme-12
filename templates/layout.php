@@ -39,17 +39,17 @@
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
-                        <a class="header__page-link <?= ($header_link == 'popular') ? 'header__page-link--active' : ''?>" href="popular.php" title="Популярный контент">
+                        <a class="header__page-link <?= ($active_section == 'popular') ? 'header__page-link--active' : ''?>" href="popular.php" title="Популярный контент">
                             <span class="visually-hidden">Популярный контент</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--feed">
-                        <a class="header__page-link <?= ($header_link == 'feed') ? 'header__page-link--active' : ''?>" href="feed.php" title="Моя лента">
+                        <a class="header__page-link <?= ($active_section == 'feed') ? 'header__page-link--active' : ''?>" href="feed.php" title="Моя лента">
                             <span class="visually-hidden">Моя лента</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--messages">
-                        <a class="header__page-link <?= ($header_link == 'messages') ? 'header__page-link--active' : ''?>" href="messages.php" title="Личные сообщения">
+                        <a class="header__page-link <?= ($active_section == 'messages') ? 'header__page-link--active' : ''?>" href="messages.php" title="Личные сообщения">
                             <span class="visually-hidden">Личные сообщения</span>
                         </a>
                     </li>

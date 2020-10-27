@@ -25,10 +25,15 @@ function truncate_text(string $text, int $truncate_length = 300): string
     }
 }
 
-function get_post_time($post_id): DateTime
+function get_content_types($connection)
 {
-    $random_date = generate_random_date($post_id);
-    return date_create($random_date);
+    $content_types_mysqli = mysqli_query(
+        $connection,
+        'SELECT * FROM content_types'
+    );
+    $content_types = mysqli_fetch_all($content_types_mysqli, MYSQLI_ASSOC);
+
+    return $content_types;
 }
 
 function absolute_time_to_relative($time, $last_word): string
@@ -70,13 +75,13 @@ function secure_query(mysqli $con, string $sql, ...$params) {
     return mysqli_stmt_get_result($prepared_sql);
 }
 
-function white_list(&$value, $allowed, $message) {
+function white_list(&$value, $allowed) {
     if ($value === null) {
-        return $allowed[0];
+        return null;
     }
     $key = array_search($value, $allowed, true);
     if ($key === false) {
-        return false;
+        return null;
     } else {
         return $value;
     }

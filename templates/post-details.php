@@ -44,14 +44,14 @@
               <div class="comments__my-avatar">
                 <img class="comments__picture" src="img/<?= $user['avatar']?>" alt="Аватар пользователя">
               </div>
-                <div class="form__input-section <?= !empty($post_errors) ? 'form__input-section--error' : '' ?>">
+                <div class="form__input-section <?= !empty($comment_errors) ? 'form__input-section--error' : '' ?>">
                     <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
                     <label class="visually-hidden">Ваш комментарий</label>
-                    <?php if (!empty($post_errors)): ?>
+                    <?php if (!empty($comment_errors)): ?>
                         <button class="form__error-button button" type="button">!</button>
                         <div class="form__error-text">
                         <h3 class="form__error-title">Ошибка валидации</h3>
-                        <p class="form__error-desc"><?= $post_errors[0] ? $post_errors['post-id'] : $post_errors['comment'] ?></p>
+                        <p class="form__error-desc"><?= $comment_errors[0] ? $comment_errors['post-id'] : $comment_errors['comment'] ?></p>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -84,7 +84,7 @@
               </ul>
               <a class="comments__more-link" href="#">
                 <span>Показать все комментарии</span>
-                <sup class="comments__amount">45</sup>
+                <sup class="comments__amount"><?= count($comments) ?></sup>
               </a>
             </div>
           </div>
@@ -93,30 +93,33 @@
           <div class="post-details__user-info user__info">
             <div class="post-details__avatar user__avatar">
               <a class="post-details__avatar-link user__avatar-link" href="#">
-                <img class="post-details__picture user__picture" src="img/<?=$post['avatar']?>" alt="Аватар пользователя">
+                <img class="post-details__picture user__picture" src="img/<?=$author['avatar']?>" alt="Аватар пользователя">
               </a>
             </div>
             <div class="post-details__name-wrapper user__name-wrapper">
-              <a class="post-details__name user__name" href="#">
-                <span><?= $post['username'] ?></span>
+              <a class="post-details__name user__name" href="profile.php?id=<?= $author['id'] ?>">
+                <span><?= $author['username'] ?></span>
               </a>
-              <time class="post-details__time user__time" datetime="2014-03-20">5 лет на сайте</time>
+              <time class="post-details__time user__time" datetime="<?= $author['dt_add'] ?? ''?>"><?= absolute_time_to_relative($author['dt_add'], 'на сайте'); ?></time>
             </div>
           </div>
           <div class="post-details__rating user__rating">
             <p class="post-details__rating-item user__rating-item user__rating-item--subscribers">
-              <span class="post-details__rating-amount user__rating-amount"><?= $author_followers_count ?></span>
-              <span class="post-details__rating-text user__rating-text"><?= get_noun_plural_form($author_followers_count,'подписчик','подписчика','подписчиков'); ?></span>
+              <span class="post-details__rating-amount user__rating-amount"><?= $author['followers'] ?></span>
+              <span class="post-details__rating-text user__rating-text"><?= get_noun_plural_form($author['followers'],'подписчик','подписчика','подписчиков'); ?></span>
             </p>
             <p class="post-details__rating-item user__rating-item user__rating-item--publications">
-              <span class="post-details__rating-amount user__rating-amount"><?= $author_posts_count ?></span>
-              <span class="post-details__rating-text user__rating-text"><?= get_noun_plural_form($author_posts_count,'публикация','публикации','публикаций'); ?></span>
+              <span class="post-details__rating-amount user__rating-amount"><?= $author['posts'] ?></span>
+              <span class="post-details__rating-text user__rating-text"><?= get_noun_plural_form($author['posts'],'публикация','публикации','публикаций'); ?></span>
             </p>
           </div>
-          <div class="post-details__user-buttons user__buttons">
-            <button class="user__button user__button--subscription button button--main" type="button">Подписаться</button>
-            <a class="user__button user__button--writing button button--green" href="#">Сообщение</a>
-          </div>
+          <?php if ($user['id'] != $author['id']): ?>
+            <div class="post-details__user-buttons user__buttons">
+                <a class="user__button user__button--subscription button button--main" href="subscribe.php?id=<?= $author['id'] ?>"><?= $user['subscribed'] ? 'Отписаться' : 'Подписаться' ?></a>
+                <a class="user__button user__button--writing button button--green" href="message.php">Сообщение</a>
+            </div>
+            <? endif; ?>
+
         </div>
       </div>
     </section>

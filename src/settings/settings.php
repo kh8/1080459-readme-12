@@ -20,6 +20,8 @@ return $settings ?? [
         'port' => '3306',
         'database' => 'readme',
     ],
+    'site_name' => 'readme',
+    'page_limit' => 6,
 ];
 
 

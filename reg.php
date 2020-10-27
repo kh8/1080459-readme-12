@@ -17,9 +17,7 @@ $form_error_codes = [
 ];
 
 if (count($_POST) > 0) {
-    foreach ($_POST as $field_name => $field_value) {
-        $form['values'][$field_name] = $field_value;
-    }
+    $form['values'] = $_POST;
     $form['errors'] = validate($connection, $form['values'], $validation_rules);
     $form['errors'] = array_filter($form['errors']);
     if (empty($form['errors'])) {

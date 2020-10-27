@@ -41,7 +41,7 @@
                             <span>Все</span>
                         </a>
                     </li>
-                    <?php foreach($content_types as $index => $content_type): ?>
+                    <?php foreach($content_types as $content_type): ?>
                         <li class="popular__filters-item filters__item">
                             <a class="button filters__button filters__button--<?=$content_type['type_class'];?> <?= ($filter == $content_type['type_class']) ? 'filters__button--active' : ''?>" href="popular.php?filter=<?=$content_type['type_class'];?>">
                                 <span class="visually-hidden"><?=$content_type['type_name'];?></span>
@@ -143,14 +143,14 @@
                 </article>
             <?php endforeach; ?>
         </div>
-        <?php if ($posts_count > $page_limit):?>
+        <?php if ($total_posts > $page_limit):?>
             <div class="popular__page-links">
                 <?php if ($page_number > 1):?>
                     <a class="popular__page-link popular__page-link--prev button button--gray" href="popular.php?page=<?= $page_number - 1?><?= $filter ? '&filter='.$filter : ''?><?= $sort ? '&sort='.$sort : ''?>">
                         Предыдущая страница
                     </a>
                 <?php endif; ?>
-                <?php if ($page_number < $posts_count / $page_limit):?>
+                <?php if ($page_number < $total_posts / $page_limit):?>
                     <a class="popular__page-link popular__page-link--next button button--gray" href="popular.php?page=<?= $page_number + 1?><?= $filter ? '&filter='.$filter : ''?><?= $sort ? '&sort='.$sort : ''?>">
                         Следующая страница
                     </a>

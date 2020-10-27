@@ -5,26 +5,26 @@
         <div class="profile__user user container">
         <div class="profile__user-info user__info">
             <div class="profile__avatar user__avatar">
-            <img class="profile__picture user__picture" src="img/<?= $author['avatar'] ?>" alt="Аватар пользователя">
+            <img class="profile__picture user__picture" src="img/<?= $owner['avatar'] ?>" alt="Аватар пользователя">
             </div>
             <div class="profile__name-wrapper user__name-wrapper">
-            <span class="profile__name user__name"><?= $author['username'] ?? '' ?></span>
-            <time class="profile__user-time user__time" datetime="<?= $author['dt_add'] ?? ''?>"><?= absolute_time_to_relative($author['dt_add'], 'на сайте'); ?></time>
+            <span class="profile__name user__name"><?= $owner['username'] ?? '' ?></span>
+            <time class="profile__user-time user__time" datetime="<?= $owner['dt_add'] ?? ''?>"><?= absolute_time_to_relative($owner['dt_add'], 'на сайте'); ?></time>
             </div>
         </div>
         <div class="profile__rating user__rating">
             <p class="profile__rating-item user__rating-item user__rating-item--publications">
-            <span class="user__rating-amount"><?= $posts_count ?? '' ?></span>
-            <span class="profile__rating-text user__rating-text"><?= get_noun_plural_form( $posts_count,'публикация','публикации','публикаций') ?></span>
+            <span class="user__rating-amount"><?= count($posts) ?? '' ?></span>
+            <span class="profile__rating-text user__rating-text"><?= get_noun_plural_form(count($posts),'публикация','публикации','публикаций') ?></span>
             </p>
             <p class="profile__rating-item user__rating-item user__rating-item--subscribers">
-            <span class="user__rating-amount"><?= $subscribers_count ?? '' ?></span>
-            <span class="profile__rating-text user__rating-text"><?= get_noun_plural_form($subscribers_count,'подписчик','подписчика','подписчиков') ?></span>
+            <span class="user__rating-amount"><?= $owner['followers'] ?? '' ?></span>
+            <span class="profile__rating-text user__rating-text"><?= get_noun_plural_form($owner['followers'],'подписчик','подписчика','подписчиков') ?></span>
             </p>
         </div>
-        <?php if ($user['id'] != $author['id']): ?>
+        <?php if ($user['id'] != $owner['id']): ?>
             <div class="profile__user-buttons user__buttons">
-                <a class="profile__user-button user__button user__button--subscription button button--main" href="subscribe.php?id=<?= $author['id'] ?>"><?= $user['subscribe'] ? 'Отписаться' : 'Подписаться' ?></a>
+                <a class="profile__user-button user__button user__button--subscription button button--main" href="subscribe.php?id=<?= $owner['id'] ?>"><?= $user['subscribed'] ? 'Отписаться' : 'Подписаться' ?></a>
                 <a class="profile__user-button user__button user__button--writing button button--green" href="message.php">Сообщение</a>
             </div>
         <? endif; ?>
@@ -36,13 +36,13 @@
             <b class="profile__tabs-caption filters__caption">Показать:</b>
             <ul class="profile__tabs-list filters__list tabs__list">
             <li class="profile__tabs-item filters__item">
-                <a class="profile__tabs-link filters__button <?= ($tab == 'posts') ? 'filters__button--active' : '' ?> tabs__item button" href="profile.php?id=<?= $author['id'] ?>&tab=posts">Посты</a>
+                <a class="profile__tabs-link filters__button <?= ($tab == 'posts') ? 'filters__button--active' : '' ?> tabs__item button" href="profile.php?id=<?= $owner['id'] ?>&tab=posts">Посты</a>
             </li>
             <li class="profile__tabs-item filters__item">
-                <a class="profile__tabs-link filters__button <?= ($tab == 'likes') ? 'filters__button--active' : '' ?> tabs__item button" href="profile.php?id=<?= $author['id'] ?>&tab=likes">Лайки</a>
+                <a class="profile__tabs-link filters__button <?= ($tab == 'likes') ? 'filters__button--active' : '' ?> tabs__item button" href="profile.php?id=<?= $owner['id'] ?>&tab=likes">Лайки</a>
             </li>
             <li class="profile__tabs-item filters__item">
-                <a class="profile__tabs-link filters__button <?= ($tab == 'subscribes') ? 'filters__button--active' : '' ?> tabs__item button" href="profile.php?id=<?= $author['id'] ?>&tab=subscribes">Подписки</a>
+                <a class="profile__tabs-link filters__button <?= ($tab == 'subscribes') ? 'filters__button--active' : '' ?> tabs__item button" href="profile.php?id=<?= $owner['id'] ?>&tab=subscribes">Подписки</a>
             </li>
             </ul>
         </div>
@@ -203,7 +203,7 @@
             <section class="profile__subscriptions tabs__content <?= ($tab == 'subscribes') ? 'tabs__content--active' : '' ?>">
             <h2 class="visually-hidden">Подписки</h2>
             <ul class="profile__subscriptions-list">
-                <?php foreach($subscribes as $id => $subscribe): ?>
+                <?php foreach($subscribes as $subscribe): ?>
                     <li class="post-mini post-mini--photo post user">
                         <div class="post-mini__user-info user__info">
                         <div class="post-mini__avatar user__avatar">

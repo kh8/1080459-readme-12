@@ -67,18 +67,16 @@ if (count($_POST) > 0 && isset($_POST['form-type'])) {
     $form['values'] = $_POST;
     $form['values']['photo-file'] = $_FILES['photo-file'];
     $form['errors'] = validate($connection, $form['values'], $validation_rules[$_POST['form-type']]);
+
     if (empty($form['errors']['photo-file'])) {
         $form = ignoreField($form, 'photo-url');
     } elseif (empty($form['errors']['photo-url'])) {
         $form = ignoreField($form, 'photo-file');
     }
+
     $form['errors'] = array_filter($form['errors']);
     if (empty($form['errors'])) {
-        $file_url = null;
-        if ($_POST['form-type'] === 'photo') {
-            $file_url = upload_file($form, $img_folder);
-        }
-
+        $file_url = ($form_type === 'photo') ? upload_file($form, $img_folder) : null;
         $post_id = save_post($connection, $form['values'], $post_types, $user, $file_url);
         add_tags($_POST['tags'], $post_id, $connection);
 

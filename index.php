@@ -2,7 +2,6 @@
 require_once(__DIR__ . '/lib/base.php');
 /** @var $connection */
 
-$select_user_query = "SELECT users.id, users.username, users.avatar FROM users WHERE users.username = ?";
 $form_error_codes = [
     'login' => 'Логин',
     'password' => 'Пароль',
@@ -16,8 +15,7 @@ if (count($_POST) > 0) {
     $form['errors'] = validate($connection, $form['values'], $validation_rules);
     $form['errors'] = array_filter($form['errors']);
     if (empty($form['errors'])) {
-        $user_mysqli = secure_query($connection, $select_user_query, $form['values']['login']);
-        $user = mysqli_fetch_assoc($user_mysqli);
+        $user = get_user_by_name($connection, $form['values']['login']);
         $_SESSION['is_auth'] = 1;
         $_SESSION['username'] = $user['username'];
         $_SESSION['avatar'] = $user['avatar'];

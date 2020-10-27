@@ -1,23 +1,7 @@
 <?php
 require_once(__DIR__ . '/lib/base.php');
+require_once(__DIR__ . '/src/posts/view.php');
 /** @var $connection */
-$select_post_by_id = "SELECT posts.*, users.id AS user_id, users.username, users.avatar, content_types.type_class,
-COALESCE(like_count, 0) AS likes,
-COALESCE(comment_count, 0) AS comments
-FROM posts
-INNER JOIN users ON posts.author_id=users.id
-INNER JOIN content_types ON posts.post_type=content_types.id
-LEFT JOIN (SELECT post_id, COUNT(*) AS like_count
-FROM likes
-GROUP BY post_id) like_counts ON like_counts.post_id = posts.id
-LEFT JOIN (SELECT post_id, COUNT(*) AS comment_count
-FROM comments
-GROUP BY post_id) comment_counts ON comment_counts.post_id = posts.id
-WHERE posts.id = ?;";
-$select_post_comments = "SELECT comments.*, users.id AS author_id, users.username AS author_name, users.avatar FROM comments INNER JOIN users ON comments.user_id=users.id WHERE post_id = ? ORDER BY dt_add DESC;";
-$count_posts_by_author = "SELECT COUNT(*) FROM posts WHERE author_id = ?;";
-$count_author_followers = "SELECT COUNT(*) FROM subscribe WHERE author_id = ?;";
-$update_post_view_count_query = "UPDATE posts SET view_count = view_count + 1 WHERE id = ?";
 $user = get_user();
 if ($user === null) {
     header("Location: index.php");
@@ -27,34 +11,30 @@ if (!isset($_GET['id'])) {
     display_404_page();
     exit();
 }
-if (!empty($_SESSION['errors'])) {
-    $post_errors = $_SESSION['errors'];
-    unset($_SESSION['errors']);
-}
 $post_id = $_GET['id'];
-$posts_mysqli = secure_query($connection, $select_post_by_id, $post_id);
-if (!mysqli_num_rows($posts_mysqli)) {
+$post = get_post($connection, $post_id);
+if ($post === null) {
     display_404_page();
     exit();
 }
-$posts_array = mysqli_fetch_all($posts_mysqli, MYSQLI_ASSOC);
-$post_author_id = $posts_array[0]['author_id'];
-$author_posts_count_mysqli = secure_query($connection, $count_posts_by_author, $post_author_id);
-$author_posts_count = mysqli_fetch_row($author_posts_count_mysqli)[0];
-$author_followers_count_mysqli = secure_query($connection, $count_author_followers, $post_author_id);
-$author_followers_count = mysqli_fetch_row($author_followers_count_mysqli)[0];
-$comments_mysqli = secure_query($connection, $select_post_comments, $post_id);
-$comments = mysqli_fetch_all($comments_mysqli, MYSQLI_ASSOC);
-$views_mysqli = secure_query($connection, $update_post_view_count_query, $post_id);
+if (!empty($_SESSION['errors'])) {
+    $comment_errors = $_SESSION['errors'];
+    unset($_SESSION['errors']);
+}
+$author_id = $post['author_id'];
+$author = get_post_author($connection, $author_id);
+$comments = get_post_comments($connection, $post_id);
+$views_mysqli = increase_post_views($connection, $post_id);
+$user['subscribed'] = get_user_subscribed($connection, $user['id'], $author_id);
+
 $page_content = include_template(
     'post-details.php',
     [
-        'post' => $posts_array[0],
-        'post_errors' => $post_errors,
+        'user' => $user,
+        'post' => $post,
+        'author' => $author,
         'comments' => $comments,
-        'author_posts_count' => $author_posts_count,
-        'author_followers_count' => $author_followers_count,
-        'user' => $user
+        'comment_errors' => $comment_errors
     ]
 );
 $layout_content = include_template(

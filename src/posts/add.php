@@ -1,16 +1,5 @@
 <?php
 
-function get_content_types($connection)
-{
-    $content_types_mysqli = mysqli_query(
-        $connection,
-        'SELECT * FROM content_types'
-    );
-    $content_types = mysqli_fetch_all($content_types_mysqli, MYSQLI_ASSOC);
-
-    return $content_types;
-}
-
 function ignoreField (array $form, string $field_name)
 {
     unset($form['errors'][$field_name]);
@@ -68,9 +57,9 @@ function save_post($connection, array $post, array $post_types, array $user, $fi
     return $post_id;
 }
 
-function add_tags(string $tags, $post_id, $connection)
+function add_tags(string $new_tags, $post_id, $connection)
 {
-    $new_tags = array_unique(explode(' ', $tags));
+    $new_tags = array_unique(explode(' ', $new_tags));
     // Небезопасный запрос.
     $select_tags_query = "SELECT * FROM hashtags WHERE tag_name in ('" . implode("','", $new_tags) . "')";
     $tags_mysqli = mysqli_query($connection, $select_tags_query);
