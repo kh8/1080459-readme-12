@@ -1,7 +1,8 @@
 <?php
-require_once('helpers.php');
-require_once('functions.php');
-require_once('db.php');
+
+require_once(__DIR__ . '/lib/base.php');
+require_once(__DIR__ . '/src/posts/add.php');
+/** @var $connection */
 
 $validation_rules = [
     'text' => [
@@ -43,75 +44,56 @@ $field_error_codes = [
     'photo-file' => 'Файл фото',
     'quote-author' => 'Автор'
 ];
-$form_type = 'text';
-$con = db_connect("localhost", "root", "", "readme");
-$content_types_mysqli = mysqli_query($con, $select_content_types_query);
-$content_types = mysqli_fetch_all($content_types_mysqli, MYSQLI_ASSOC);
+$img_folder = __DIR__ . '\\img\\';
+$user = get_user();
+if ($user === null) {
+    header("Location: index.php");
+    exit();
+}
+
+$content_types = get_content_types($connection);
 $post_types = array_column($content_types, 'id', 'type_class');
-if ((count($_POST) > 0) && isset($_POST['form-type'])){
+
+$form = [
+    'values' => [],
+    'errors' => [],
+];
+
+
+$form_type = $_GET['tab'] ?? 'text';
+
+if (count($_POST) > 0 && isset($_POST['form-type'])) {
     $form_type = $_POST['form-type'];
-    foreach ($_POST as $field_name => $field_value) {
-        $form['values'][$field_name] = $field_value;
-    }
+    $form['values'] = $_POST;
     $form['values']['photo-file'] = $_FILES['photo-file'];
-    $form['errors'] = validate($form['values'], $validation_rules[$form_type], $con);
+    $form['errors'] = validate($connection, $form['values'], $validation_rules[$_POST['form-type']]);
+
     if (empty($form['errors']['photo-file'])) {
-        unset($form['errors']['photo-url']);
-        unset($form['values']['photo-url']);
+        $form = ignoreField($form, 'photo-url');
     } elseif (empty($form['errors']['photo-url'])) {
-        unset($form['errors']['photo-file']);
-        unset($form['values']['photo-file']);
+        $form = ignoreField($form, 'photo-file');
     }
+
     $form['errors'] = array_filter($form['errors']);
     if (empty($form['errors'])) {
-        switch ($form_type) {
-            case 'quote':
-                secure_query($con, $add_quote_post_query, 'siss', $_POST['heading'], $post_types[$form_type], $_POST['content'], $_POST['quote-author']);
-                $post_id = mysqli_insert_id($con);
-                break;
-            case 'text':
-                secure_query($con, $add_text_post_query, 'sis', $_POST['heading'], $post_types[$form_type], $_POST['content']);
-                $post_id = mysqli_insert_id($con);
-                break;
-            case 'link':
-                secure_query($con, $add_link_post_query, 'sis', $_POST['heading'], $post_types[$form_type], $_POST['link-url']);
-                $post_id = mysqli_insert_id($con);
-                break;
-            case 'video':
-                secure_query($con, $add_video_post_query, 'siss', $_POST['heading'], $post_types[$form_type], $_POST['content'], $_POST['youtube_url']);
-                $post_id = mysqli_insert_id($con);
-                break;
-            case 'photo':
-                if (isset($form['values']['photo-file'])) {
-                    $file_name = $form['values']['photo-file']['name'];
-                    $file_path = __DIR__ . '/uploads/';
-                    $file_url = '/uploads/' . $file_name;
-                    move_uploaded_file($_FILES['photo-file']['tmp_name'], $file_path . $file_name);
-                } else {
-                    $file_url = $_POST['photo-url'];
-                }
-                secure_query($con, $add_photo_post_query, 'siss', $_POST['heading'], $post_types[$form_type], $_POST['content'], $file_url);
-                $post_id = mysqli_insert_id($con);
-        }
-        $new_tags = array_unique(explode(' ', $_POST['tags']));
-        $select_tags_query = "SELECT * FROM hashtags WHERE tag_name in ('".implode("','",$new_tags)."')";
-        $tags_mysqli = mysqli_query($con, $select_tags_query);
-        $tags = mysqli_fetch_all($tags_mysqli, MYSQLI_ASSOC);
-        foreach ($new_tags as $new_tag) {
-            $index = array_search($new_tag, array_column($tags, 'tag_name'));
-            if ($index !== false) {
-                unset($new_tags[$new_tag]);
-                $tag_id = $tags[$index]['id'];
-            } else {
-                secure_query($con, $add_tag_query, 's', $new_tag);
-                $tag_id = mysqli_insert_id($con);
-            }
-            secure_query($con, $add_post_tag_query, 'ii', $post_id, $tag_id);
-        }
-        $URL = '/post.php?id='.$post_id;
+        $file_url = ($form_type === 'photo') ? upload_file($form, $img_folder) : null;
+        $post_id = save_post($connection, $form['values'], $post_types, $user, $file_url);
+        add_tags($_POST['tags'], $post_id, $connection);
+
+        $URL = '/post.php?id=' . $post_id;
         header("Location: $URL");
     }
 }
-$page_content = include_template('adding-post.php', ['content_types' => $content_types, 'form_values' => $form['values'], 'form_errors' => $form['errors'], 'field_error_codes' => $field_error_codes, 'form_type' => $form_type]);
+
+$page_content = include_template(
+    'add-template.php',
+    [
+        'content_types' => $content_types,
+        'form_values' => $form['values'],
+        'form_errors' => $form['errors'],
+        'field_error_codes' => $field_error_codes,
+        'form_type' => $form_type,
+        'user' => $user
+    ]
+);
 print($page_content);
-?>
