@@ -2,6 +2,8 @@
 
 require_once(__DIR__ . '/lib/base.php');
 require_once(__DIR__ . '/src/posts/add.php');
+require_once(__DIR__ . '/src/notification.php');
+
 /** @var $connection */
 
 $validation_rules = [
@@ -44,6 +46,8 @@ $field_error_codes = [
     'photo-file' => 'Файл фото',
     'quote-author' => 'Автор'
 ];
+
+$title = $settings['site_name'] . ' | Добавить пост';
 $img_folder = __DIR__ . '\\img\\';
 $user = get_user();
 if ($user === null) {
@@ -51,6 +55,7 @@ if ($user === null) {
     exit();
 }
 
+$add_post_button = false;
 $content_types = get_content_types($connection);
 $post_types = array_column($content_types, 'id', 'type_class');
 
@@ -79,7 +84,8 @@ if (count($_POST) > 0 && isset($_POST['form-type'])) {
         $file_url = ($form_type === 'photo') ? upload_file($form, $img_folder) : null;
         $post_id = save_post($connection, $form['values'], $post_types, $user, $file_url);
         add_tags($_POST['tags'], $post_id, $connection);
-
+        $followers = get_user_followers($connection, $user['id']);
+        new_post_notification($followers, $settings['smtp'], $user, $form['values']['heading'], $post_id, $settings['site_url']);
         $URL = '/post.php?id=' . $post_id;
         header("Location: $URL");
     }
@@ -93,7 +99,16 @@ $page_content = include_template(
         'form_errors' => $form['errors'],
         'field_error_codes' => $field_error_codes,
         'form_type' => $form_type,
-        'user' => $user
     ]
 );
-print($page_content);
+
+$layout_content = include_template(
+    'layout.php',
+    [
+        'title' => $title,
+        'user' => $user,
+        'content' => $page_content,
+        'add_post_button' => $add_post_button
+    ]
+);
+print($layout_content);
