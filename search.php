@@ -22,7 +22,7 @@ if ($keywords === '') {
     exit();
 }
 $search_results = search_posts($connection, $keywords);
-if (count($search_results) == 0) {
+if (count($search_results) === 0) {
     $page_content = include_template(
         'no-results.php',
         [

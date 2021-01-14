@@ -109,7 +109,7 @@ function secure_query(mysqli $connection, string $sql, ...$params)
 {
     $param_types = '';
     foreach ($params as $param) {
-        $param_types .= (gettype($param) == 'integer') ? 'i' : 's';
+        $param_types .= (gettype($param) === 'integer') ? 'i' : 's';
     }
     $prepared_sql = mysqli_prepare($connection, $sql);
     mysqli_stmt_bind_param($prepared_sql, $param_types, ...$params);
@@ -129,7 +129,7 @@ function secure_query_bind_result(mysqli $connection, string $sql, ...$params)
 {
     $param_types = '';
     foreach ($params as $param) {
-        $param_types .= (gettype($param) == 'integer') ? 'i' : 's';
+        $param_types .= (gettype($param) === 'integer') ? 'i' : 's';
     }
     $prepared_sql = mysqli_prepare($connection, $sql);
     mysqli_stmt_bind_param($prepared_sql, $param_types, ...$params);
@@ -440,7 +440,7 @@ function validateYoutubeURL(array $inputArray, string $parameterName): ?string
         $resp = file_get_contents($url);
 
         if ($resp && $json = json_decode($resp, true)) {
-            $res = $json['pageInfo']['totalResults'] > 0 && $json['items'][0]['status']['privacyStatus'] == 'public';
+            $res = $json['pageInfo']['totalResults'] > 0 && $json['items'][0]['status']['privacyStatus'] === 'public';
         } else {
             $res = 'Видео по ссылке не найдено';
         }
