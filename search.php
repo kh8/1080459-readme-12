@@ -9,6 +9,7 @@ if ($user === null) {
     header("Location: index.php");
     exit();
 }
+$title = $settings['site_name'] . ' | Поиск';
 
 $add_post_button = true;
 if (!isset($_GET['keywords'])) {
@@ -16,7 +17,7 @@ if (!isset($_GET['keywords'])) {
     exit();
 }
 $keywords = trim($_GET['keywords']);
-if ($keywords == '') {
+if ($keywords === '') {
     display_404_page();
     exit();
 }

@@ -1,3 +1,5 @@
+<?php $active_section = $active_section ?? ''; ?>
+
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -8,7 +10,6 @@
   <title><?= $title; ?></title>
   <link rel="stylesheet" href="css/main.css">
 </head>
-
 <body class="page">
   <div style="display: none">
     <svg xmlns="http://www.w3.org/2000/svg">

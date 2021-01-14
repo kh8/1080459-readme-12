@@ -101,7 +101,7 @@
                     ?>
                     <div class="post-link__wrapper">
                       <a class="post-link__external" href="
-                      <?= $post['content'] ? htmlspecialchars($post['content']) : '' ?>"
+                      <?= $post['url'] ? htmlspecialchars($post['url']) : '' ?>"
                         title="Перейти по ссылке">
                         <div class="post-link__info-wrapper">
                           <div class="post-link__icon-wrapper">
@@ -111,7 +111,7 @@
                             <h3><?= $post['title'] ? htmlspecialchars($post['title']) : '' ?></h3>
                           </div>
                         </div>
-                        <span><?= $post['content'] ? htmlspecialchars($post['content']) : '' ?></span>
+                        <span><?= $post['url'] ? htmlspecialchars(remove_url_protocol($post['url'])) : '' ?></span>
                       </a>
                     </div>
                     <?php
@@ -179,13 +179,16 @@
         <div class="popular__page-links">
         <?php if ($page_number > 1) :?>
             <a class="popular__page-link popular__page-link--prev button button--gray"
-            href="popular.php?page=<?= $page_number - 1?><?= $filter ? '&filter=' . $filter : ''?><?= $sort ? '&sort=' . $sort : ''?>">
+            href="popular.php?page=<?= $page_number - 1?> .
+            <?= $filter ? '&filter=' . $filter : ''?> .
+            <?= $sort ? '&sort=' . $sort : ''?>">
             Предыдущая страница
             </a>
         <?php endif; ?>
         <?php if ($page_number < $total_posts / $page_limit) :?>
             <a class="popular__page-link popular__page-link--next button button--gray"
-            href="popular.php?page=<?= $page_number + 1?><?= $filter ? '&filter=' . $filter : ''?><?= $sort ? '&sort=' . $sort : ''?>">
+            href="popular.php?page=<?= $page_number + 1?><?= $filter ? '&filter=' . $filter : ''?> .
+            <?= $sort ? '&sort=' . $sort : ''?>">
             Следующая страница
             </a>
         <?php endif; ?>

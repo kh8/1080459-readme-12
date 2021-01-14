@@ -27,6 +27,22 @@ function truncate_text(string $text, int $truncate_length = 300): string
 }
 
 /**
+ * Убирает из URL протокол и www
+ * @param  string $url
+ * @return string
+ */
+function remove_url_protocol(string $url): string
+{
+    $url = trim($url, '/');
+    if (!preg_match('#^http(s)?://#', $url)) {
+        $url = 'http://' . $url;
+    }
+    $urlParts = parse_url($url);
+    $domain = preg_replace('/^www\./', '', $urlParts['host']);
+    return $domain;
+}
+
+/**
  * Загружает из БД виды контента
  * @param  mysqli $connection
  * @return array Виды контента
@@ -91,6 +107,7 @@ function absolute_time_to_relative(string $time, string $last_word = 'назад
  */
 function secure_query(mysqli $connection, string $sql, ...$params)
 {
+    $param_types = '';
     foreach ($params as $param) {
         $param_types .= (gettype($param) == 'integer') ? 'i' : 's';
     }
@@ -110,6 +127,7 @@ function secure_query(mysqli $connection, string $sql, ...$params)
  */
 function secure_query_bind_result(mysqli $connection, string $sql, ...$params)
 {
+    $param_types = '';
     foreach ($params as $param) {
         $param_types .= (gettype($param) == 'integer') ? 'i' : 's';
     }
@@ -145,7 +163,7 @@ function white_list($value, array $allowed)
 function display_404_page()
 {
     $page_content = include_template('404.php');
-    $layout_content = include_template('layout.php', ['content' => $page_content]);
+    $layout_content = include_template('layout.php', ['content' => $page_content, 'add_post_button' => false]);
     print($layout_content);
     http_response_code(404);
 }
@@ -221,6 +239,22 @@ function validateLong(array $inputArray, string $parameterName, int $length): ?s
 {
     if (strlen(trim($inputArray[$parameterName])) < $length) {
         return 'Текст должен быть не короче ' . $length . ' символов';
+    }
+    return null;
+}
+
+/**
+ * Проверяет, что строка не короче заданного числа символов
+ *
+ * @param  array $inputArray Массив полей и их значений
+ * @param  string $parameterName Имя текстового поля
+ * @param  int $length Длина
+ * @return string Ошибка либо null
+ */
+function validateShort(array $inputArray, string $parameterName, int $length): ?string
+{
+    if (strlen(trim($inputArray[$parameterName])) > $length) {
+        return 'Поле должно быть не длиннее ' . $length . ' символов';
     }
     return null;
 }
